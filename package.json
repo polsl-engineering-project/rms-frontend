@@ -1,0 +1,27 @@
+{
+  "name": "rms-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "React/TypeScript monorepo for RMS frontend applications",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules .turbo"
+  },
+  "devDependencies": {
+    "turbo": "^2.2.3",
+    "typescript": "^5.6.3",
+    "prettier": "^3.3.3",
+    "@types/node": "^22.8.6"
+  },
+  "packageManager": "pnpm@9.12.3",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}
