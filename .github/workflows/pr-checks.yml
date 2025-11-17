@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build packages
+        run: pnpm run build --filter=@repo/api-client
+
       - name: Run TypeScript type-check
         run: pnpm run type-check
 
