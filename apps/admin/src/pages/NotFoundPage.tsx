@@ -9,7 +9,8 @@ export function NotFoundPage() {
           <div className="text-6xl font-bold text-gray-900 mb-4">404</div>
           <CardTitle>Page Not Found</CardTitle>
           <CardDescription>
-            The page you're looking for doesn't exist in the admin portal or you don't have access.
+            The page you&apos;re looking for doesn&apos;t exist in the admin portal or you
+            don&apos;t have access.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">

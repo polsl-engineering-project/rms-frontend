@@ -3,10 +3,13 @@ import { QueryClient } from '@tanstack/react-query';
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: (failureCount, error: any) => {
+      retry: (failureCount, error: unknown) => {
         // Don't retry on 401 errors
-        if (error?.response?.status === 401) {
-          return false;
+        if (error && typeof error === 'object' && 'response' in error) {
+          const errorWithResponse = error as { response?: { status?: number } };
+          if (errorWithResponse.response?.status === 401) {
+            return false;
+          }
         }
         return failureCount < 3;
       },

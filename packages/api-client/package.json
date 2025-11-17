@@ -21,7 +21,7 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.11",
@@ -33,6 +33,7 @@
     "@types/node": "^22.8.6",
     "eslint": "^8.57.1",
     "openapi-typescript": "^7.4.4",
+    "rimraf": "^6.1.0",
     "typescript": "^5.6.3"
   }
 }
