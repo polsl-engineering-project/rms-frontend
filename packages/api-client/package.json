@@ -1,0 +1,38 @@
+{
+  "name": "@repo/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/generated/api.d.ts"
+    }
+  },
+  "scripts": {
+    "generate:types": "openapi-typescript ./openapi.json --output ./src/generated/api.d.ts",
+    "build": "pnpm run generate:types && tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.62.11",
+    "openapi-fetch": "^0.13.4",
+    "openapi-react-query": "^0.2.4"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@types/node": "^22.8.6",
+    "eslint": "^8.57.1",
+    "openapi-typescript": "^7.4.4",
+    "typescript": "^5.6.3"
+  }
+}

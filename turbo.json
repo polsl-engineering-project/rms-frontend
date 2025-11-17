@@ -2,8 +2,12 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
+    "generate:types": {
+      "outputs": ["src/generated/**"],
+      "cache": true
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "generate:types"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": {
