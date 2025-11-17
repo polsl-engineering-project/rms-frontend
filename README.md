@@ -6,8 +6,8 @@ A scalable React/TypeScript monorepo built with pnpm workspaces and Turborepo, f
 
 This monorepo implements a dual-domain architecture:
 
-- **General App** (`apps/general`) → Deployed to `mydomain.com`
-- **Admin App** (`apps/admin`) → Deployed to `admin.mydomain.com`
+- **General App** (`apps/general`) → Deployed to `rms-demo.pl`
+- **Admin App** (`apps/admin`) → Deployed to `admin.rms-demo.pl`
 - **Shared UI Package** (`packages/ui`) → Reusable components library
 
 ### Technology Stack
@@ -260,8 +260,8 @@ Configure these secrets in your GitHub repository settings:
    - One for the admin app (e.g., `rms-admin-prod`)
 
 2. **Configure custom domains**:
-   - General project → `mydomain.com`
-   - Admin project → `admin.mydomain.com`
+   - General project → `rms-demo.pl`
+   - Admin project → `admin.rms-demo.pl`
 
 3. **Disable automatic Git builds** (we use Direct Upload from GitHub Actions)
 

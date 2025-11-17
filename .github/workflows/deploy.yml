@@ -42,10 +42,10 @@ jobs:
       - name: Run Cached Monorepo Build
         run: pnpm run build
 
-      # --- Deployment 1: General App (mydomain.com) ---
+      # --- Deployment 1: General App (rms-demo.pl) ---
       - name: Deploy General App to Cloudflare Pages
         run: npx wrangler pages deploy apps/general/dist --project-name=${{ secrets.PAGES_PROJECT_GENERAL }}
 
-      # --- Deployment 2: Admin App (admin.mydomain.com) ---
+      # --- Deployment 2: Admin App (admin.rms-demo.pl) ---
       - name: Deploy Admin App to Cloudflare Pages
         run: npx wrangler pages deploy apps/admin/dist --project-name=${{ secrets.PAGES_PROJECT_ADMIN }}
