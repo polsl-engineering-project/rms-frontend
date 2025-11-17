@@ -5,6 +5,9 @@ import { getAuthToken, useAuthStore } from '../stores/auth';
 let onUnauthorizedCallback: (() => void) | undefined;
 let refreshTokenCallback: (() => Promise<void>) | undefined;
 
+// Promise to track ongoing refresh operations and prevent race conditions
+let refreshPromise: Promise<void> | null = null;
+
 export const setUnauthorizedHandler = (handler: () => void) => {
   onUnauthorizedCallback = handler;
 };
@@ -31,8 +34,23 @@ export const { $api, fetchClient } = createApiClient({
     // 2. Token is expiring soon
     // 3. Not already refreshing
     if (isAuthenticated() && isTokenExpiringSoon() && !isRefreshing && refreshTokenCallback) {
+      // If there's already a refresh in progress, wait for it
+      if (refreshPromise) {
+        console.log(`[Auto-refresh] Refresh already in progress, waiting for ${url}`);
+        await refreshPromise;
+        return;
+      }
+
       console.log(`[Auto-refresh] Token expiring soon, refreshing before ${url}`);
-      await refreshTokenCallback();
+      
+      // Start a new refresh and track it
+      refreshPromise = refreshTokenCallback()
+        .finally(() => {
+          // Clear the promise once complete (success or failure)
+          refreshPromise = null;
+        });
+      
+      await refreshPromise;
     }
   },
 });
