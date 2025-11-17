@@ -39,6 +39,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
+      - name: Build API Client Package First
+        run: pnpm --filter @repo/api-client run build
+
       - name: Run Cached Monorepo Build
         run: pnpm run build
 

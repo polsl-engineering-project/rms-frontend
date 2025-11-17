@@ -1,0 +1,1299 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Restaurant Management System API",
+    "description": "API documentation for the Restaurant Management System",
+    "version": "1.0.0"
+  },
+  "servers": [{ "url": "http://localhost:8080", "description": "Generated server url" }],
+  "tags": [
+    { "name": "Menu actions", "description": "Operations related to menu management" },
+    { "name": "User actions", "description": "Operations related to user management" },
+    { "name": "Bill actions", "description": "Operations related to bill management" },
+    { "name": "Authentication", "description": "Endpoints for user authentication" },
+    { "name": "Order actions", "description": "Operations related to order management" }
+  ],
+  "paths": {
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": ["User actions"],
+        "summary": "Get user by ID",
+        "operationId": "getUserById",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/UserResponse" } } }
+          },
+          "404": {
+            "description": "User not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "put": {
+        "tags": ["User actions"],
+        "summary": "Update user information",
+        "operationId": "updateUser",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "User updated successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "User not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User actions"],
+        "summary": "Delete user by ID",
+        "operationId": "deleteUser",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "User deleted successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "User not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/menu/item/{id}": {
+      "get": {
+        "tags": ["Menu actions"],
+        "summary": "Get menu item by ID",
+        "operationId": "getItem",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Menu item retrieved successfully",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/MenuItemResponse" } } }
+          },
+          "400": {
+            "description": "UUID malformed",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Menu item not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Menu actions"],
+        "summary": "Update existing menu item",
+        "operationId": "updateItem",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateMenuItemRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Menu item updated successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Menu item not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Menu actions"],
+        "summary": "Delete menu item",
+        "operationId": "deleteItem",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Menu item deleted successfully" },
+          "400": {
+            "description": "UUID malformed",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Menu item not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/menu/category/{id}": {
+      "get": {
+        "tags": ["Menu actions"],
+        "summary": "Get category by ID",
+        "operationId": "getCategory",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "withItems", "in": "query", "required": false, "schema": { "type": "boolean" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category retrieved successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/MenuCategoryResponse" } }
+            }
+          },
+          "400": {
+            "description": "UUID malformed",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Menu actions"],
+        "summary": "Update existing category",
+        "operationId": "updateCategory",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateMenuCategoryRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Category updated successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Menu actions"],
+        "summary": "Delete category",
+        "operationId": "deleteCategory",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Category deleted successfully" },
+          "400": {
+            "description": "UUID malformed",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": ["User actions"],
+        "summary": "Get all users with pagination",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/PageUserResponse" } } }
+          },
+          "400": {
+            "description": "Invalid pagination parameters",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["User actions"],
+        "summary": "Create a new user",
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateUserRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User created successfully",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/UserResponse" } } }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/start-delivery": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Start delivery for an order",
+        "operationId": "startDelivery",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Delivery started" },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/ready": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Mark order as ready",
+        "operationId": "markAsReady",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Order marked as ready" },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/complete": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Complete an order",
+        "operationId": "completeOrder",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Order completed" },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/change-lines": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Change order lines",
+        "operationId": "changeOrderLines",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangeOrderLinesRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Order lines changed" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/cancel": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Cancel an order",
+        "operationId": "cancelOrder",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CancelOrderRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Order cancelled" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/approve/kitchen": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Approve order by kitchen",
+        "operationId": "approveByKitchen",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ApproveOrderByKitchenRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Order approved successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/approve/front-desk": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Approve order by front desk",
+        "operationId": "approveByFrontDesk",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Order approved successfully" },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/place-pick-up-order": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Place a pick-up order",
+        "operationId": "placePickUpOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlacePickUpOrderRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Order placed successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/OrderPlacedResponse" } }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/place-delivery-order": {
+      "post": {
+        "tags": ["Order actions"],
+        "summary": "Place a delivery order",
+        "operationId": "placeDeliveryOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlaceDeliveryOrderRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Order placed successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/OrderPlacedResponse" } }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/menu/item": {
+      "get": {
+        "tags": ["Menu actions"],
+        "summary": "Get all menu items with pagination and optional filtering",
+        "operationId": "getAllItems",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          },
+          { "name": "categoryId", "in": "query", "required": false, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Menu items retrieved successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/PageMenuItemResponse" } }
+            }
+          },
+          "400": {
+            "description": "Invalid pagination parameters",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Menu actions"],
+        "summary": "Create a new menu item",
+        "operationId": "createItem",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateMenuItemRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Menu item created successfully",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/MenuItemResponse" } } }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/menu/category": {
+      "get": {
+        "tags": ["Menu actions"],
+        "summary": "Get all categories with pagination",
+        "operationId": "getAllCategories",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categories retrieved successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/PageMenuCategoryResponse" } }
+            }
+          },
+          "400": {
+            "description": "Invalid pagination parameters",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Menu actions"],
+        "summary": "Create a new category",
+        "operationId": "createCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateMenuCategoryRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Category created successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/MenuCategoryResponse" } }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/bills": {
+      "post": {
+        "tags": ["Bill actions"],
+        "summary": "Search and filter bills with pagination",
+        "operationId": "searchBills",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/BillSearchRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Bills retrieved successfully",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/BillPageResponse" } } }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/bills/{id}/remove-items": {
+      "post": {
+        "tags": ["Bill actions"],
+        "summary": "Remove items from an open bill",
+        "operationId": "removeItems",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RemoveItemsFromBillRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Items removed successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Bill not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/bills/{id}/close": {
+      "post": {
+        "tags": ["Bill actions"],
+        "summary": "Close a bill",
+        "operationId": "closeBill",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Bill closed successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Bill not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/bills/{id}/add-items": {
+      "post": {
+        "tags": ["Bill actions"],
+        "summary": "Add items to an open bill",
+        "operationId": "addItems",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddItemsToBillRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Items added successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Bill not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/bills/open": {
+      "post": {
+        "tags": ["Bill actions"],
+        "summary": "Open a new bill for a table",
+        "operationId": "openBill",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/OpenBillRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Bill opened successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/BillOpenedResponse" } }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Refresh JWT token",
+        "description": "Generates a new access and refresh token pair using the provided refresh token cookie",
+        "operationId": "refreshToken",
+        "parameters": [
+          {
+            "name": "refresh_token",
+            "in": "cookie",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/LoginResponse" } }
+            }
+          },
+          "400": {
+            "description": "Refresh token is missing or invalid",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Unauthorized or expired refresh token",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Logout user",
+        "description": "Revokes the refresh token and clears the refresh_token cookie",
+        "operationId": "logout",
+        "parameters": [
+          {
+            "name": "refresh_token",
+            "in": "cookie",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User logged out successfully" },
+          "500": {
+            "description": "Internal server error",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login a user",
+        "description": "Authenticates a user with username and password and returns a JWT token",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/LoginResponse" } }
+            }
+          },
+          "400": {
+            "description": "Invalid request (validation failed)",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/customer-view": {
+      "get": {
+        "tags": ["Order actions"],
+        "summary": "Get limited view of your order (customer)",
+        "operationId": "getOrderForCustomer",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order view retrieved successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/OrderCustomerViewResponse" } }
+            }
+          },
+          "404": {
+            "description": "Order not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/bills/{id}": {
+      "get": {
+        "tags": ["Bill actions"],
+        "summary": "Search bill by id",
+        "operationId": "searchBill",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bill retrieved successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/BillSummaryResponse" } }
+            }
+          },
+          "404": {
+            "description": "Bill not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK"] }
+        },
+        "required": ["role"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string", "format": "date-time" },
+          "status": { "type": "integer", "format": "int32" },
+          "error": { "type": "string" },
+          "message": { "type": "string" },
+          "details": { "type": "object", "additionalProperties": { "type": "string" } }
+        }
+      },
+      "UpdateMenuItemRequest": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number" },
+          "calories": { "type": "integer", "format": "int32" },
+          "allergens": { "type": "string" },
+          "vegetarian": { "type": "boolean" },
+          "vegan": { "type": "boolean" },
+          "glutenFree": { "type": "boolean" },
+          "spiceLevel": {
+            "type": "string",
+            "enum": ["NONE", "MILD", "MEDIUM", "HOT", "EXTRA_HOT"]
+          },
+          "categoryId": { "type": "string", "format": "uuid" }
+        },
+        "required": ["categoryId", "glutenFree", "id", "price", "spiceLevel", "vegan", "vegetarian"]
+      },
+      "UpdateMenuCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "active": { "type": "boolean" }
+        },
+        "required": ["active", "id"]
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK"] }
+        },
+        "required": ["role"]
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "username": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK"] }
+        }
+      },
+      "ChangeOrderLinesRequest": {
+        "type": "object",
+        "properties": {
+          "newLines": { "type": "array", "items": { "$ref": "#/components/schemas/OrderLine" } },
+          "removedLines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RemoveLine" }
+          },
+          "updatedEstimatedPreparationTimeMinutes": { "type": "integer", "format": "int32" }
+        }
+      },
+      "OrderLine": {
+        "type": "object",
+        "properties": {
+          "menuItemId": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "format": "int32", "minimum": 1 },
+          "version": { "type": "integer", "format": "int64" }
+        },
+        "required": ["menuItemId"]
+      },
+      "RemoveLine": {
+        "type": "object",
+        "properties": {
+          "menuItemId": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "format": "int32", "minimum": 1 }
+        },
+        "required": ["menuItemId"]
+      },
+      "CancelOrderRequest": {
+        "type": "object",
+        "properties": { "reason": { "type": "string", "maxLength": 500, "minLength": 0 } },
+        "required": ["reason"]
+      },
+      "ApproveOrderByKitchenRequest": {
+        "type": "object",
+        "properties": { "estimatedPreparationMinutes": { "type": "integer", "format": "int32" } }
+      },
+      "CustomerInfo": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "phoneNumber": { "type": "string" }
+        }
+      },
+      "PlacePickUpOrderRequest": {
+        "type": "object",
+        "properties": {
+          "customerInfo": { "$ref": "#/components/schemas/CustomerInfo" },
+          "deliveryMode": { "type": "string", "enum": ["ASAP", "SCHEDULED"] },
+          "scheduledFor": { "type": "object", "example": "15:26:21" },
+          "orderLines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderLine" },
+            "minItems": 1
+          }
+        },
+        "required": ["customerInfo", "deliveryMode", "orderLines"]
+      },
+      "OrderPlacedResponse": {
+        "type": "object",
+        "properties": { "id": { "type": "string", "format": "uuid" } }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "street": { "type": "string" },
+          "houseNumber": { "type": "string" },
+          "apartmentNumber": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "apartment": { "type": "boolean" }
+        }
+      },
+      "PlaceDeliveryOrderRequest": {
+        "type": "object",
+        "properties": {
+          "customerInfo": { "$ref": "#/components/schemas/CustomerInfo" },
+          "address": { "$ref": "#/components/schemas/Address" },
+          "deliveryMode": { "type": "string", "enum": ["ASAP", "SCHEDULED"] },
+          "scheduledFor": { "type": "object", "example": "15:26:21" },
+          "orderLines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderLine" },
+            "minItems": 1
+          }
+        },
+        "required": ["address", "customerInfo", "deliveryMode", "orderLines"]
+      },
+      "CreateMenuItemRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number" },
+          "calories": { "type": "integer", "format": "int32" },
+          "allergens": { "type": "string" },
+          "vegetarian": { "type": "boolean" },
+          "vegan": { "type": "boolean" },
+          "glutenFree": { "type": "boolean" },
+          "spiceLevel": {
+            "type": "string",
+            "enum": ["NONE", "MILD", "MEDIUM", "HOT", "EXTRA_HOT"]
+          },
+          "categoryId": { "type": "string", "format": "uuid" }
+        },
+        "required": ["categoryId", "glutenFree", "price", "spiceLevel", "vegan", "vegetarian"]
+      },
+      "MenuItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number" },
+          "calories": { "type": "integer", "format": "int32" },
+          "allergens": { "type": "string" },
+          "vegetarian": { "type": "boolean" },
+          "vegan": { "type": "boolean" },
+          "glutenFree": { "type": "boolean" },
+          "spiceLevel": {
+            "type": "string",
+            "enum": ["NONE", "MILD", "MEDIUM", "HOT", "EXTRA_HOT"]
+          },
+          "categoryId": { "type": "string", "format": "uuid" },
+          "version": { "type": "integer", "format": "int32" }
+        }
+      },
+      "CreateMenuCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "active": { "type": "boolean" }
+        },
+        "required": ["active"]
+      },
+      "MenuCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "active": { "type": "boolean" },
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/MenuItemResponse" } }
+        }
+      },
+      "BillSearchRequest": {
+        "type": "object",
+        "properties": {
+          "statuses": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["OPEN", "CLOSED"] }
+          },
+          "openedFrom": { "type": "string", "format": "date-time" },
+          "openedTo": { "type": "string", "format": "date-time" },
+          "closedFrom": { "type": "string", "format": "date-time" },
+          "closedTo": { "type": "string", "format": "date-time" },
+          "userId": { "type": "string" },
+          "tableNumbers": {
+            "type": "array",
+            "items": { "type": "integer", "format": "int32", "minimum": 1 }
+          },
+          "minTotalAmount": { "type": "number" },
+          "maxTotalAmount": { "type": "number" },
+          "menuItemId": { "type": "string" },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "OPENED_AT",
+              "CLOSED_AT",
+              "UPDATED_AT",
+              "TOTAL_AMOUNT",
+              "TABLE_NUMBER",
+              "USER_ID"
+            ]
+          },
+          "sortDirection": { "type": "string", "enum": ["ASC", "DESC"] },
+          "page": { "type": "integer", "format": "int32", "minimum": 0 },
+          "size": { "type": "integer", "format": "int32", "maximum": 100, "minimum": 1 }
+        }
+      },
+      "BillPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BillSummaryResponse" }
+          },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "hasPrevious": { "type": "boolean" },
+          "hasNext": { "type": "boolean" }
+        }
+      },
+      "BillSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "tableNumber": { "type": "integer", "format": "int32" },
+          "status": { "type": "string", "enum": ["OPEN", "CLOSED"] },
+          "userId": { "type": "string" },
+          "totalAmount": { "type": "number" },
+          "itemCount": { "type": "integer", "format": "int32" },
+          "openedAt": { "type": "string", "format": "date-time" },
+          "closedAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "RemoveItemsFromBillRequest": {
+        "type": "object",
+        "properties": {
+          "removedLines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RemoveLine" },
+            "minItems": 1
+          }
+        },
+        "required": ["removedLines"]
+      },
+      "AddItemsToBillRequest": {
+        "type": "object",
+        "properties": {
+          "newLines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BillLine" },
+            "minItems": 1
+          }
+        },
+        "required": ["newLines"]
+      },
+      "BillLine": {
+        "type": "object",
+        "properties": {
+          "menuItemId": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "format": "int32", "minimum": 1 },
+          "version": { "type": "integer", "format": "int64" }
+        },
+        "required": ["menuItemId"]
+      },
+      "OpenBillRequest": {
+        "type": "object",
+        "properties": {
+          "tableNumber": { "type": "integer", "format": "int32", "minimum": 1 },
+          "userId": { "type": "string" },
+          "initialLines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BillLine" },
+            "minItems": 1
+          }
+        },
+        "required": ["initialLines", "tableNumber", "userId"]
+      },
+      "BillOpenedResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "tableNumber": { "type": "integer", "format": "int32" }
+        }
+      },
+      "LoginResponse": { "type": "object", "properties": { "accessToken": { "type": "string" } } },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string", "minLength": 1 },
+          "password": { "type": "string", "minLength": 1 }
+        },
+        "required": ["password", "username"]
+      },
+      "PageUserResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/UserResponse" } },
+          "number": { "type": "integer", "format": "int32" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "integer", "format": "int64" },
+          "paged": { "type": "boolean" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "unpaged": { "type": "boolean" }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "empty": { "type": "boolean" },
+          "sorted": { "type": "boolean" },
+          "unsorted": { "type": "boolean" }
+        }
+      },
+      "OrderCustomerViewResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "status": { "type": "string" },
+          "estimatedPreparationMinutes": { "type": "integer", "format": "int32" },
+          "cancellationReason": { "type": "string" }
+        }
+      },
+      "PageMenuItemResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MenuItemResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageMenuCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MenuCategoryResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "empty": { "type": "boolean" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer auth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    }
+  }
+}
