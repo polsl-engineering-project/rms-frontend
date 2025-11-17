@@ -61,7 +61,7 @@ rms-frontend/
 
 ### Prerequisites
 
-- **Node.js**: v20.0.0 or higher
+- **Node.js**: v2.0.0 or higher
 - **pnpm**: v9.0.0 or higher
 
 Install pnpm globally if you haven't already:
