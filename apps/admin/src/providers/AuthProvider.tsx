@@ -34,7 +34,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const timeUntilWarning = getTimeUntilWarning();
 
       if (timeUntilWarning === null || timeUntilWarning === 0) {
-        // Token is already in warning zone or expired, refresh immediately
+        // Token is already in warning zone or may be expired
+        // Check if token is expired first, if so, don't attempt refresh
+        const isExpired = useAuthStore.getState().isTokenExpired();
+        if (isExpired) {
+          console.warn('Token has expired, not attempting refresh');
+          return;
+        }
+        
+        // Token is in warning zone but not expired, refresh immediately
         if (isTokenExpiringSoon()) {
           refreshMutation.mutateAsync().catch((error: Error) => {
             console.error('Auto-refresh failed:', error);

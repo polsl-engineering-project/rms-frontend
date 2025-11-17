@@ -4,7 +4,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 // Token TTL: 60 minutes (in milliseconds)
 const TOKEN_TTL_MS = 60 * 60 * 1000;
 
-// Warning threshold: 15 minutes before expiration (in milliseconds)
+// Warning threshold: triggers when 15 minutes remain until expiration (in milliseconds)
 const TOKEN_EXPIRY_WARNING_MS = 15 * 60 * 1000;
 
 interface AuthState {
@@ -79,6 +79,12 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage', // localStorage key
       storage: createJSONStorage(() => localStorage),
+      // Only persist non-sensitive metadata (not the token itself)
+      // Token is kept in memory only to prevent XSS attacks
+      partialize: (state) => ({
+        tokenExpiresAt: state.tokenExpiresAt,
+        isRefreshing: state.isRefreshing,
+      }),
     }
   )
 );

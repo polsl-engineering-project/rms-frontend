@@ -11,6 +11,8 @@ export interface ApiClientConfig {
 }
 
 // Auth endpoints that should skip the onBeforeRequest callback
+// The onBeforeRequest callback is useful for non-auth endpoints to handle token refresh
+// before making the actual API call, ensuring requests don't fail due to expired tokens
 const AUTH_ENDPOINTS = ['/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/refresh'];
 
 export function createApiClient(config: ApiClientConfig) {
