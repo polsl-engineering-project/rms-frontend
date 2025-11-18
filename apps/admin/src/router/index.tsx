@@ -1,25 +1,16 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { ProtectedLayout } from '../layouts/ProtectedLayout';
 import { LoginPage } from '../pages/LoginPage';
-import { DashboardPage } from '../pages/DashboardPage';
+import { HomePage } from '../pages/HomePage';
+import { KitchenViewPage } from '../pages/KitchenViewPage';
+import { LiveOrdersPage } from '../pages/LiveOrdersPage';
+import { WaiterDashboardPage } from '../pages/WaiterDashboardPage';
+import { WaiterMenuPage } from '../pages/WaiterMenuPage';
+import { OrderDetailsPage } from '../pages/OrderDetailsPage';
+import { OrderHistoryPage } from '../pages/OrderHistoryPage';
+import { UserManagementPage } from '../pages/UserManagementPage';
+import { MenuManagementPage } from '../pages/MenuManagementPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
-
-// Placeholder component for routes that aren't implemented yet
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white shadow rounded-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
-          <p className="text-gray-600">This page is under construction. Check back soon!</p>
-          <a href="/dashboard" className="inline-block mt-4 text-blue-500 hover:text-blue-700">
-            ← Back to Dashboard
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export const router = createBrowserRouter([
   {
@@ -32,31 +23,49 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/dashboard" replace />,
+        element: <HomePage />,
+      },
+
+      // Kitchen Staff - Single page with all controls
+      {
+        path: 'kitchen',
+        element: <KitchenViewPage />,
+      },
+
+      // Live Orders Management - Accept/Deny/Delay incoming orders
+      {
+        path: 'live-orders',
+        element: <LiveOrdersPage />,
+      },
+
+      // Waiter Interface
+      {
+        path: 'waiter',
+        element: <WaiterDashboardPage />,
       },
       {
-        path: 'dashboard',
-        element: <DashboardPage />,
+        path: 'waiter/menu',
+        element: <WaiterMenuPage />,
       },
       {
-        path: 'users',
-        element: <PlaceholderPage title="User Management" />,
+        path: 'waiter/orders/:orderId',
+        element: <OrderDetailsPage />,
+      },
+
+      // Order History
+      {
+        path: 'orders/history',
+        element: <OrderHistoryPage />,
+      },
+
+      // Manager/Admin Only
+      {
+        path: 'admin/users',
+        element: <UserManagementPage />,
       },
       {
-        path: 'menu',
-        element: <PlaceholderPage title="Menu Management" />,
-      },
-      {
-        path: 'orders',
-        element: <PlaceholderPage title="Order Management" />,
-      },
-      {
-        path: 'bills',
-        element: <PlaceholderPage title="Bill Management" />,
-      },
-      {
-        path: 'settings',
-        element: <PlaceholderPage title="Settings" />,
+        path: 'admin/menu',
+        element: <MenuManagementPage />,
       },
     ],
   },

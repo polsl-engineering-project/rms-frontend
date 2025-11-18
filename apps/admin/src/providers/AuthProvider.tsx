@@ -41,7 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           console.warn('Token has expired, not attempting refresh');
           return;
         }
-        
+
         // Token is in warning zone but not expired, refresh immediately
         if (isTokenExpiringSoon()) {
           refreshMutation.mutateAsync().catch((error: Error) => {
