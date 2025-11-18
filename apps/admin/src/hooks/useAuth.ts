@@ -11,10 +11,19 @@ type LoginResponse =
 
 export const useLogin = () => {
   const setToken = useAuthStore((state) => state.setToken);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (credentials: LoginRequest) => {
+      // Only clear auth state if user is not currently authenticated
+      // This prevents logging out valid sessions during page refresh
+      if (!isAuthenticated()) {
+        clearAuth();
+        queryClient.clear();
+      }
+
       const { data, error } = await fetchClient.POST('/api/v1/auth/login', {
         body: credentials,
       });
@@ -50,22 +59,29 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      // Call logout endpoint (will clear refresh_token cookie)
+      // Call logout endpoint to clear refresh_token cookie on the server
       const { error } = await fetchClient.POST('/api/v1/auth/logout');
 
       if (error) {
         console.error('Logout endpoint error:', error);
         // Continue with local cleanup even if API call fails
       }
-    },
-    onSuccess: () => {
+
+      // Clear client-side auth state and cache
       clearAuth();
       queryClient.clear();
+
+      // Note: The server should clear the refresh_token cookie via Set-Cookie header
+      // There's no way to manually delete HTTP-only cookies from JavaScript
+    },
+    onSuccess: () => {
+      // State already cleared in mutationFn
+      console.log('Logout successful');
     },
     onError: (error: Error) => {
       console.error('Logout error:', error);
 
-      // Clear local state even if API call failed
+      // Ensure local state is cleared even if API call failed
       clearAuth();
       queryClient.clear();
     },

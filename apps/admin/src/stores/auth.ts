@@ -79,11 +79,10 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage', // localStorage key
       storage: createJSONStorage(() => localStorage),
-      // Only persist non-sensitive metadata (not the token itself)
-      // Token is kept in memory only to prevent XSS attacks
+      // Persist token and expiration time for session persistence across page refreshes
       partialize: (state) => ({
+        token: state.token,
         tokenExpiresAt: state.tokenExpiresAt,
-        isRefreshing: state.isRefreshing,
       }),
     }
   )
