@@ -1,13 +1,38 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchClient } from '../api/client';
 import { useAuthStore } from '../stores/auth';
 import type { paths } from '@repo/api-client';
+import type { CurrentUser } from '../types/auth';
 
 // Type definitions from OpenAPI spec
 type LoginRequest =
   paths['/api/v1/auth/login']['post']['requestBody']['content']['application/json'];
 type LoginResponse =
   paths['/api/v1/auth/login']['post']['responses']['200']['content']['application/json'];
+
+export const useGetMe = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
+
+  return useQuery({
+    queryKey: ['user', 'me'],
+    queryFn: async () => {
+      const { data, error } = await fetchClient.GET('/api/v1/users/me');
+
+      if (error) {
+        throw new Error(error.message || 'Failed to fetch user data');
+      }
+
+      if (!data) {
+        throw new Error('No user data received');
+      }
+
+      return data as CurrentUser;
+    },
+    enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+  });
+};
 
 export const useLogin = () => {
   const setToken = useAuthStore((state) => state.setToken);
@@ -44,8 +69,8 @@ export const useLogin = () => {
         setToken(data.accessToken);
       }
 
-      // Invalidate any cached queries on login
-      queryClient.invalidateQueries();
+      // Invalidate queries to trigger user data fetch
+      queryClient.invalidateQueries({ queryKey: ['user', 'me'] });
     },
     onError: (error: Error) => {
       console.error('Login error:', error);
@@ -67,7 +92,7 @@ export const useLogout = () => {
         // Continue with local cleanup even if API call fails
       }
 
-      // Clear client-side auth state and cache
+      // Clear client-side auth state (including user data) and cache
       clearAuth();
       queryClient.clear();
 
@@ -81,7 +106,7 @@ export const useLogout = () => {
     onError: (error: Error) => {
       console.error('Logout error:', error);
 
-      // Ensure local state is cleared even if API call failed
+      // Ensure local state is cleared (including user data) even if API call failed
       clearAuth();
       queryClient.clear();
     },

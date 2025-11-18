@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* Scan UI package components for Tailwind classes */
+@source '../../../packages/ui/src/**/*.{ts,tsx}';
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -17,12 +20,11 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  max-width: 100vw;
   min-height: 100vh;
 }
 
 #root {
   width: 100%;
+  min-height: 100vh;
 }

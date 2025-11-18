@@ -23,3 +23,26 @@ export { Alert, AlertTitle, AlertDescription } from './components/ui/alert';
 export { Separator } from './components/ui/separator';
 
 export { Input } from './components/ui/input';
+
+export { Avatar, AvatarImage, AvatarFallback } from './components/ui/avatar';
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+} from './components/ui/dropdown-menu';
+
+// Icons from lucide-react
+export { LogOut, User, ChevronDown } from 'lucide-react';

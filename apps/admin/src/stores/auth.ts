@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { CurrentUser } from '../types/auth';
 
 // Token TTL: 60 minutes (in milliseconds)
 const TOKEN_TTL_MS = 60 * 60 * 1000;
@@ -10,8 +11,10 @@ const TOKEN_EXPIRY_WARNING_MS = 15 * 60 * 1000;
 interface AuthState {
   token: string | null;
   tokenExpiresAt: number | null; // Unix timestamp in milliseconds
+  user: CurrentUser | null;
   isRefreshing: boolean;
   setToken: (token: string) => void;
+  setUser: (user: CurrentUser | null) => void;
   clearAuth: () => void;
   isAuthenticated: () => boolean;
   isTokenExpired: () => boolean;
@@ -26,6 +29,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       token: null,
       tokenExpiresAt: null,
+      user: null,
       isRefreshing: false,
 
       setToken: (token: string) => {
@@ -33,8 +37,12 @@ export const useAuthStore = create<AuthState>()(
         set({ token, tokenExpiresAt: expiresAt });
       },
 
+      setUser: (user: CurrentUser | null) => {
+        set({ user });
+      },
+
       clearAuth: () => {
-        set({ token: null, tokenExpiresAt: null, isRefreshing: false });
+        set({ token: null, tokenExpiresAt: null, user: null, isRefreshing: false });
       },
 
       isAuthenticated: () => {
@@ -79,10 +87,11 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage', // localStorage key
       storage: createJSONStorage(() => localStorage),
-      // Persist token and expiration time for session persistence across page refreshes
+      // Persist token, expiration time, and user data for session persistence across page refreshes
       partialize: (state) => ({
         token: state.token,
         tokenExpiresAt: state.tokenExpiresAt,
+        user: state.user,
       }),
     }
   )
