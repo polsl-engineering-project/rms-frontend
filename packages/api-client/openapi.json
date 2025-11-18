@@ -815,6 +815,23 @@
         }
       }
     },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": ["User actions"],
+        "summary": "Get authenticated user details",
+        "operationId": "me",
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/UserResponse" } } }
+          },
+          "400": {
+            "description": "Invalid pagination parameters",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
     "/api/v1/orders/{id}/customer-view": {
       "get": {
         "tags": ["Order actions"],
@@ -869,7 +886,7 @@
           "firstName": { "type": "string" },
           "lastName": { "type": "string" },
           "phoneNumber": { "type": "string" },
-          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK"] }
+          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK", "DRIVER"] }
         },
         "required": ["role"]
       },
@@ -921,7 +938,7 @@
           "firstName": { "type": "string" },
           "lastName": { "type": "string" },
           "phoneNumber": { "type": "string" },
-          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK"] }
+          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK", "DRIVER"] }
         },
         "required": ["role"]
       },
@@ -933,7 +950,7 @@
           "firstName": { "type": "string" },
           "lastName": { "type": "string" },
           "phoneNumber": { "type": "string" },
-          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK"] }
+          "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "WAITER", "COOK", "DRIVER"] }
         }
       },
       "ChangeOrderLinesRequest": {
@@ -986,7 +1003,7 @@
         "properties": {
           "customerInfo": { "$ref": "#/components/schemas/CustomerInfo" },
           "deliveryMode": { "type": "string", "enum": ["ASAP", "SCHEDULED"] },
-          "scheduledFor": { "type": "object", "example": "15:26:21" },
+          "scheduledFor": { "type": "object", "example": "20:22:43" },
           "orderLines": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/OrderLine" },
@@ -1016,7 +1033,7 @@
           "customerInfo": { "$ref": "#/components/schemas/CustomerInfo" },
           "address": { "$ref": "#/components/schemas/Address" },
           "deliveryMode": { "type": "string", "enum": ["ASAP", "SCHEDULED"] },
-          "scheduledFor": { "type": "object", "example": "15:26:21" },
+          "scheduledFor": { "type": "object", "example": "20:22:43" },
           "orderLines": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/OrderLine" },
