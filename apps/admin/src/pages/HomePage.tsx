@@ -66,7 +66,7 @@ export function HomePage() {
               <Card className="h-full border-0">
                 {/* Gradient Background */}
                 <div
-                  className={`absolute inset-0 bg-linear-to-br ${portal.color} opacity-10 group-hover:opacity-20 transition-opacity`}
+                  className={`absolute inset-0 bg-gradient-to-br ${portal.color} opacity-10 group-hover:opacity-20 transition-opacity`}
                 />
 
                 {/* Content */}

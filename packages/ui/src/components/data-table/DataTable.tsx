@@ -191,9 +191,11 @@ function convertToTanStackColumn<TData>(column: Column<TData>): ColumnDef<TData,
         }
 
         case COLUMN_CELL_TYPE.COMPONENT: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          type CellValue = string extends keyof TData ? TData[keyof TData & string] : never;
           return (
-            <div className={column.className}>{column.render(value as any, row.original)}</div>
+            <div className={column.className}>
+              {column.render(value as CellValue, row.original)}
+            </div>
           );
         }
 

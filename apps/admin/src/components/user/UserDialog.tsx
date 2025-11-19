@@ -144,7 +144,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
     },
     validationSchema: isEdit ? updateUserSchema : createUserSchema,
     onSubmit: (values) => {
-      const { submit, ...userData } = values;
+      const { submit: _submit, ...userData } = values;
       if (isEdit) {
         updateMutation.mutate(userData);
       } else {

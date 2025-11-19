@@ -85,12 +85,9 @@ export function ProtectedLayout() {
                     />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-42 z-100 bg-white mt-0.5 rounded-t-none"
-                >
+                <DropdownMenuContent align="end" className="z-100 bg-white mt-0.5 rounded-t-none">
                   <DropdownMenuItem
-                    className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50 py-3 px-4 "
+                    className="cursor-pointer w-[9.5rem] text-red-600 focus:text-red-700 focus:bg-red-50 py-3 px-4 "
                     onClick={() => logout()}
                   >
                     <LogOut className="mr-2 h-4 w-4" />

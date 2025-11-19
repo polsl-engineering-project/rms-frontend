@@ -1,7 +1,8 @@
-@import '@repo/ui/styles';
+@import '@repo/ui/styles.css';
 
-/* Scan UI package components for Tailwind classes */
-@source '../../../packages/ui/src/**/*.{ts,tsx}';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   margin: 0;

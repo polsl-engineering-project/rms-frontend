@@ -1,6 +1,6 @@
 import { UserRole } from '../types';
 
-export const roleArrayToRoleObject = <T extends any = true>(roles: UserRole[], value?: T) => {
+export const roleArrayToRoleObject = <T = true>(roles: UserRole[], value?: T) => {
   return roles.reduce(
     (acc, role) => ({
       ...acc,
