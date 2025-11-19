@@ -413,6 +413,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get authenticated user details */
+        get: operations["me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/orders/{id}/customer-view": {
         parameters: {
             query?: never;
@@ -457,7 +474,7 @@ export interface components {
             lastName?: string;
             phoneNumber?: string;
             /** @enum {string} */
-            role: "ADMIN" | "MANAGER" | "WAITER" | "COOK";
+            role: "ADMIN" | "MANAGER" | "WAITER" | "COOK" | "DRIVER";
         };
         ErrorResponse: {
             /** Format: date-time */
@@ -501,7 +518,7 @@ export interface components {
             lastName?: string;
             phoneNumber?: string;
             /** @enum {string} */
-            role: "ADMIN" | "MANAGER" | "WAITER" | "COOK";
+            role: "ADMIN" | "MANAGER" | "WAITER" | "COOK" | "DRIVER";
         };
         UserResponse: {
             /** Format: uuid */
@@ -511,7 +528,7 @@ export interface components {
             lastName?: string;
             phoneNumber?: string;
             /** @enum {string} */
-            role?: "ADMIN" | "MANAGER" | "WAITER" | "COOK";
+            role?: "ADMIN" | "MANAGER" | "WAITER" | "COOK" | "DRIVER";
         };
         ChangeOrderLinesRequest: {
             newLines?: components["schemas"]["OrderLine"][];
@@ -549,7 +566,7 @@ export interface components {
             customerInfo: components["schemas"]["CustomerInfo"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 15:26:21 */
+            /** @example 20:22:43 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -570,7 +587,7 @@ export interface components {
             address: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 15:26:21 */
+            /** @example 20:22:43 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -1963,6 +1980,35 @@ export interface operations {
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Users retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description Invalid pagination parameters */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };

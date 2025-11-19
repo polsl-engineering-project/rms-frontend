@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useAuthStore } from '../stores/auth';
-import { useRefreshToken } from '../hooks/useAuth';
+import { useRefreshToken, useGetMe } from '../hooks/useAuth';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -18,9 +18,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isTokenExpiringSoon = useAuthStore((state) => state.isTokenExpiringSoon);
   const getTimeUntilWarning = useAuthStore((state) => state.getTimeUntilWarning);
   const isRefreshing = useAuthStore((state) => state.isRefreshing);
+  const setUser = useAuthStore((state) => state.setUser);
 
   const refreshMutation = useRefreshToken();
+  const { data: userData } = useGetMe();
   const [isLoading, setIsLoading] = useState(true);
+
+  // Update user in store when data is fetched
+  useEffect(() => {
+    if (userData) {
+      setUser(userData);
+    }
+  }, [userData, setUser]);
 
   useEffect(() => {
     setIsLoading(false);
