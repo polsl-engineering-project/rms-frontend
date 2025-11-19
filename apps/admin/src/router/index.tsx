@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ProtectedLayout } from '../layouts/ProtectedLayout';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
@@ -11,6 +11,7 @@ import { OrderHistoryPage } from '../pages/OrderHistoryPage';
 import { UserManagementPage } from '../pages/UserManagementPage';
 import { MenuManagementPage } from '../pages/MenuManagementPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
+import { RoleGuard } from '../components/RoleGuard';
 
 export const router = createBrowserRouter([
   {
@@ -61,11 +62,19 @@ export const router = createBrowserRouter([
       // Manager/Admin Only
       {
         path: 'admin/users',
-        element: <UserManagementPage />,
+        element: (
+          <RoleGuard admin manager fallback={<Navigate to="/" replace />}>
+            <UserManagementPage />
+          </RoleGuard>
+        ),
       },
       {
         path: 'admin/menu',
-        element: <MenuManagementPage />,
+        element: (
+          <RoleGuard admin manager fallback={<Navigate to="/" replace />}>
+            <MenuManagementPage />
+          </RoleGuard>
+        ),
       },
     ],
   },

@@ -9,9 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
   Button,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@repo/ui';
 import { fetchClient } from '../../api/client';
 import { queryClient } from '../../lib/queryClient';
+import { useAuthStore } from '../../stores/auth';
 
 type UserResponse = components['schemas']['UserResponse'];
 
@@ -23,6 +28,8 @@ type DeleteUserDialogProps = {
 
 export function DeleteUserDialog({ open, onOpenChange, user }: DeleteUserDialogProps) {
   const [error, setError] = useState<string>('');
+  const currentUser = useAuthStore((state) => state.user);
+  const isSelf = currentUser?.id === user?.id;
 
   const deleteMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -99,14 +106,27 @@ export function DeleteUserDialog({ open, onOpenChange, user }: DeleteUserDialogP
           >
             Cancel
           </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deleteMutation.isPending}
-          >
-            {deleteMutation.isPending ? 'Deleting...' : 'Delete User'}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={handleDelete}
+                    disabled={deleteMutation.isPending || isSelf}
+                  >
+                    {deleteMutation.isPending ? 'Deleting...' : 'Delete User'}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              {isSelf && (
+                <TooltipContent>
+                  <p>You cannot delete your own account</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </DialogFooter>
       </DialogContent>
     </Dialog>
