@@ -12,6 +12,9 @@ export default defineConfig({
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
+  optimizeDeps: {
+    exclude: ['@repo/ui'],
+  },
   server: {
     port: 5173,
     //   proxy: {  Workaround for for when the CORS issues appear again in development

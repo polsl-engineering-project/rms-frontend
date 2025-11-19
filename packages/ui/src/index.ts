@@ -44,5 +44,50 @@ export {
   DropdownMenuRadioGroup,
 } from './components/ui/dropdown-menu';
 
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+} from './components/ui/table';
+
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from './components/ui/dialog';
+
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from './components/ui/select';
+
+export { Label } from './components/ui/label';
+export { Checkbox } from './components/ui/checkbox';
+
+// Data Table Components
+export { DataTable, TableToolbar } from './components/data-table';
+export type { Column, DataTableProps, Pagination, ColumnCellType } from './components/data-table';
+export { COLUMN_CELL_TYPE } from './components/data-table';
+
 // Icons from lucide-react
 export { LogOut, User, ChevronDown } from 'lucide-react';

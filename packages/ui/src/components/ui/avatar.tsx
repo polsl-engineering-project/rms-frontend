@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
+import '../../styles/globals.css';
 
 import { cn } from '../../lib/utils';
 

@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+/* Design tokens and theme variables - NO Tailwind initialization */
+/* Only the consuming apps should @import 'tailwindcss' */
 
 @layer base {
   :root {
@@ -54,5 +55,94 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+  }
+}
+
+@layer utilities {
+  /* Animation base classes */
+  .animate-in {
+    animation-name: enter;
+    animation-duration: 150ms;
+    --tw-enter-opacity: initial;
+    --tw-enter-scale: initial;
+    --tw-enter-rotate: initial;
+    --tw-enter-translate-x: initial;
+    --tw-enter-translate-y: initial;
+  }
+  .animate-out {
+    animation-name: exit;
+    animation-duration: 150ms;
+    --tw-exit-opacity: initial;
+    --tw-exit-scale: initial;
+    --tw-exit-rotate: initial;
+    --tw-exit-translate-x: initial;
+    --tw-exit-translate-y: initial;
+  }
+
+  /* Fade animations */
+  .fade-in-0 {
+    --tw-enter-opacity: 0;
+  }
+  .fade-out-0 {
+    --tw-exit-opacity: 0;
+  }
+
+  /* Zoom animations */
+  .zoom-in-95 {
+    --tw-enter-scale: 0.95;
+  }
+  .zoom-out-95 {
+    --tw-exit-scale: 0.95;
+  }
+
+  /* Slide animations */
+  .slide-in-from-left-1\/2 {
+    --tw-enter-translate-x: -50%;
+  }
+  .slide-in-from-top-1\/2 {
+    --tw-enter-translate-y: -50%;
+  }
+  .slide-out-to-left-1\/2 {
+    --tw-exit-translate-x: -50%;
+  }
+  .slide-out-to-top-1\/2 {
+    --tw-exit-translate-y: -50%;
+  }
+  .slide-out-to-top-\[48\%\] {
+    --tw-exit-translate-y: -48%;
+  }
+  .slide-in-from-top-\[48\%\] {
+    --tw-enter-translate-y: -48%;
+  }
+
+  /* Data state variants for Radix UI */
+  [data-state='open'].animate-in,
+  [data-state='open'] .animate-in {
+    animation-name: enter;
+  }
+  [data-state='closed'].animate-out,
+  [data-state='closed'] .animate-out {
+    animation-name: exit;
+  }
+
+  /* Duration utilities */
+  .duration-200 {
+    animation-duration: 200ms;
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: var(--tw-enter-opacity, 1);
+    transform: translate(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0))
+      rotate(var(--tw-enter-rotate, 0)) scale(var(--tw-enter-scale, 1));
+  }
+}
+
+@keyframes exit {
+  to {
+    opacity: var(--tw-exit-opacity, 1);
+    transform: translate(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0))
+      rotate(var(--tw-exit-rotate, 0)) scale(var(--tw-exit-scale, 1));
   }
 }
