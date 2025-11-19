@@ -1,8 +1,51 @@
+import { useState } from 'react';
+import type { components } from '@repo/api-client';
+import { UserDialog } from '../components/dialogs/UserDialog';
+import { DeleteUserDialog } from '../components/dialogs/DeleteUserDialog';
+import { UserTable } from '../components/tables/UserTable';
+
+type UserResponse = components['schemas']['UserResponse'];
+
 export function UserManagementPage() {
+  const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
+  const [deletingUser, setDeletingUser] = useState<UserResponse | null>(null);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-4xl font-bold mb-2">User Management</h1>
-      <p className="text-gray-600">Manage users and their roles (Manager only)</p>
+    <div className="min-h-screen bg-background p-8">
+      <div className="mb-6">
+        <h1 className="text-4xl font-bold mb-2 text-foreground">User Management</h1>
+        <p className="text-muted-foreground">Manage users and their roles</p>
+      </div>
+
+      <UserTable
+        onCreateUser={() => setIsCreateDialogOpen(true)}
+        onEditUser={setEditingUser}
+        onDeleteUser={setDeletingUser}
+      />
+
+      {/* Create/Edit Dialog */}
+      <UserDialog
+        open={isCreateDialogOpen || !!editingUser}
+        onOpenChange={(open: boolean) => {
+          if (!open) {
+            setIsCreateDialogOpen(false);
+            setEditingUser(null);
+          }
+        }}
+        user={editingUser}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteUserDialog
+        open={!!deletingUser}
+        onOpenChange={(open: boolean) => {
+          if (!open) {
+            setDeletingUser(null);
+          }
+        }}
+        user={deletingUser}
+      />
     </div>
   );
 }

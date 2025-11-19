@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import { useAuthStore } from '../stores/auth';
 import { useAuthActions } from '../hooks/useAuth';
 import {
@@ -8,12 +9,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   Badge,
   LogOut,
-  User,
   ChevronDown,
 } from '@repo/ui';
 
@@ -22,6 +20,7 @@ export function ProtectedLayout() {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const { logout } = useAuthActions();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // If not authenticated, redirect to login
   if (!isAuthenticated) {
@@ -47,7 +46,7 @@ export function ProtectedLayout() {
 
   // Render child routes if authenticated
   return (
-    <div className="min-h-screen  bg-linear-to-b from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-linear-to-b from-slate-50 to-slate-100 flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
         <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -67,7 +66,7 @@ export function ProtectedLayout() {
           {/* Right: User Menu */}
           <div className="flex items-center gap-4">
             {user && (
-              <DropdownMenu>
+              <DropdownMenu onOpenChange={setIsDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2 h-auto py-2 px-3">
                     <Avatar className="h-8 w-8">
@@ -81,19 +80,14 @@ export function ProtectedLayout() {
                       </span>
                       {user.role && <span className="text-xs text-slate-500">{user.role}</span>}
                     </div>
-                    <ChevronDown className="h-4 w-4 text-slate-500" />
+                    <ChevronDown
+                      className={`h-4 w-4 text-slate-500 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-slate-50 mt-2">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                <DropdownMenuContent align="end" className="z-100 bg-white mt-0.5 rounded-t-none">
                   <DropdownMenuItem
-                    className="cursor-pointer text-red-600 focus:text-red-600"
+                    className="cursor-pointer w-[9.5rem] text-red-600 focus:text-red-700 focus:bg-red-50 py-3 px-4 "
                     onClick={() => logout()}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
@@ -107,7 +101,7 @@ export function ProtectedLayout() {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl w-full flex-1 flex px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </main>
     </div>

@@ -7,7 +7,6 @@ import { AuthProvider } from './providers/AuthProvider';
 import { queryClient } from './lib/queryClient';
 import { setUnauthorizedHandler, setRefreshTokenHandler, fetchClient } from './api/client';
 import { useAuthStore } from './stores/auth';
-import '@repo/ui/src/styles/globals.css';
 import './index.css';
 
 // Handle 401 errors by clearing auth
