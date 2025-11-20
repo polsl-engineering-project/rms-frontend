@@ -413,6 +413,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/{id}/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change user password */
+        patch: operations["changePassword"];
+        trace?: never;
+    };
     "/api/v1/users/me": {
         parameters: {
             query?: never;
@@ -566,7 +583,7 @@ export interface components {
             customerInfo: components["schemas"]["CustomerInfo"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 20:22:43 */
+            /** @example 16:26:39 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -587,7 +604,7 @@ export interface components {
             address: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 20:22:43 */
+            /** @example 16:26:39 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -728,6 +745,9 @@ export interface components {
             username: string;
             password: string;
         };
+        ChangePasswordRequest: {
+            password?: string;
+        };
         PageUserResponse: {
             /** Format: int64 */
             totalElements?: number;
@@ -739,11 +759,11 @@ export interface components {
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
+            first?: boolean;
+            last?: boolean;
             empty?: boolean;
         };
         PageableObject: {
@@ -781,11 +801,11 @@ export interface components {
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
+            first?: boolean;
+            last?: boolean;
             empty?: boolean;
         };
         PageMenuCategoryResponse: {
@@ -799,11 +819,11 @@ export interface components {
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
+            first?: boolean;
+            last?: boolean;
             empty?: boolean;
         };
     };
@@ -1980,6 +2000,48 @@ export interface operations {
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description User deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description User not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

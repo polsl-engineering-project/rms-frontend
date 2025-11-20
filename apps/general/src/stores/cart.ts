@@ -22,6 +22,7 @@ interface CartActions {
   getItemQuantity: (itemId: string) => number;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  getCartForOrder: () => Array<{ menuItemId: string; quantity: number; version: number }>;
 }
 
 type CartStore = CartState & CartActions;
@@ -107,6 +108,14 @@ export const useCartStore = create<CartStore>()(
 
       getTotalPrice: () => {
         return get().items.reduce((total, item) => total + item.price * item.quantity, 0);
+      },
+
+      getCartForOrder: () => {
+        return get().items.map((item) => ({
+          menuItemId: item.itemId,
+          quantity: item.quantity,
+          version: 1, // Assuming version 1 for now
+        }));
       },
     }),
     {

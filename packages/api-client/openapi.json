@@ -815,6 +815,35 @@
         }
       }
     },
+    "/api/v1/users/{id}/change-password": {
+      "patch": {
+        "tags": ["User actions"],
+        "summary": "Change user password",
+        "operationId": "changePassword",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangePasswordRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "User deleted successfully" },
+          "400": {
+            "description": "Invalid input data",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "User not found",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
     "/api/v1/users/me": {
       "get": {
         "tags": ["User actions"],
@@ -1003,7 +1032,7 @@
         "properties": {
           "customerInfo": { "$ref": "#/components/schemas/CustomerInfo" },
           "deliveryMode": { "type": "string", "enum": ["ASAP", "SCHEDULED"] },
-          "scheduledFor": { "type": "object", "example": "20:22:43" },
+          "scheduledFor": { "type": "object", "example": "16:26:39" },
           "orderLines": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/OrderLine" },
@@ -1033,7 +1062,7 @@
           "customerInfo": { "$ref": "#/components/schemas/CustomerInfo" },
           "address": { "$ref": "#/components/schemas/Address" },
           "deliveryMode": { "type": "string", "enum": ["ASAP", "SCHEDULED"] },
-          "scheduledFor": { "type": "object", "example": "20:22:43" },
+          "scheduledFor": { "type": "object", "example": "16:26:39" },
           "orderLines": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/OrderLine" },
@@ -1226,6 +1255,10 @@
         },
         "required": ["password", "username"]
       },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "properties": { "password": { "type": "string" } }
+      },
       "PageUserResponse": {
         "type": "object",
         "properties": {
@@ -1235,10 +1268,10 @@
           "content": { "type": "array", "items": { "$ref": "#/components/schemas/UserResponse" } },
           "number": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
-          "first": { "type": "boolean" },
-          "last": { "type": "boolean" },
           "numberOfElements": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
           "empty": { "type": "boolean" }
         }
       },
@@ -1282,10 +1315,10 @@
           },
           "number": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
-          "first": { "type": "boolean" },
-          "last": { "type": "boolean" },
           "numberOfElements": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
           "empty": { "type": "boolean" }
         }
       },
@@ -1301,10 +1334,10 @@
           },
           "number": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
-          "first": { "type": "boolean" },
-          "last": { "type": "boolean" },
           "numberOfElements": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
           "empty": { "type": "boolean" }
         }
       }
