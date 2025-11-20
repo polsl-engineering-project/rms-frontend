@@ -87,10 +87,47 @@ export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './comp
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs';
 
+export {
+  Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+} from './components/ui/drawer';
+
+export {
+  Sheet,
+  SheetPortal,
+  SheetOverlay,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+} from './components/ui/sheet';
+
 // Data Table Components
 export { DataTable, TableToolbar } from './components/data-table';
 export type { Column, DataTableProps, Pagination, ColumnCellType } from './components/data-table';
 export { COLUMN_CELL_TYPE } from './components/data-table';
 
 // Icons from lucide-react
-export { LogOut, User, ChevronDown } from 'lucide-react';
+export {
+  LogOut,
+  User,
+  ChevronDown,
+  Minus,
+  Plus,
+  ShoppingCart,
+  Package,
+  UtensilsCrossed,
+  Clock,
+  MapPin,
+} from 'lucide-react';
