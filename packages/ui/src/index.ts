@@ -85,6 +85,8 @@ export { Checkbox } from './components/ui/checkbox';
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './components/ui/tooltip';
 
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs';
+
 // Data Table Components
 export { DataTable, TableToolbar } from './components/data-table';
 export type { Column, DataTableProps, Pagination, ColumnCellType } from './components/data-table';
