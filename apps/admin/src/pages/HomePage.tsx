@@ -38,7 +38,7 @@ const portals: Portal[] = [
     title: 'Manager Portal',
     description: 'Administration and settings',
     icon: '⚙️',
-    path: '/admin/users',
+    path: '/admin',
     color: 'from-purple-500 to-pink-600',
     roles: ['ADMIN', 'MANAGER'],
   },
@@ -115,13 +115,6 @@ export function HomePage() {
             className="hover:text-gray-900 transition-colors"
           >
             Live Orders
-          </button>
-          <span className="text-gray-300">•</span>
-          <button
-            onClick={() => navigate('/orders/history')}
-            className="hover:text-gray-900 transition-colors"
-          >
-            Order History
           </button>
         </div>
       </div>

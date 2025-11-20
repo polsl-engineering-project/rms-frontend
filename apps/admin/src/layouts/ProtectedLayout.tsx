@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuthStore } from '../stores/auth';
 import { useAuthActions } from '../hooks/useAuth';
@@ -19,6 +19,7 @@ export function ProtectedLayout() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
+  const navigate = useNavigate();
   const { logout } = useAuthActions();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -53,7 +54,12 @@ export function ProtectedLayout() {
           {/* Left: App Name & Location */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-slate-900">RMS Admin</h1>
+              <h1
+                className="text-xl font-bold text-slate-900 cursor-pointer transition-colors"
+                onClick={() => navigate('/')}
+              >
+                RMS Admin
+              </h1>
             </div>
             <div className="hidden sm:flex items-center gap-2">
               <div className="h-6 w-px bg-slate-300" />
@@ -101,7 +107,7 @@ export function ProtectedLayout() {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl w-full flex-1 flex px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl w-full flex-1 flex py-8">
         <Outlet />
       </main>
     </div>

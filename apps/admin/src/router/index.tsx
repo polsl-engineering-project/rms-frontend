@@ -7,9 +7,11 @@ import { LiveOrdersPage } from '../pages/LiveOrdersPage';
 import { WaiterDashboardPage } from '../pages/WaiterDashboardPage';
 import { WaiterMenuPage } from '../pages/WaiterMenuPage';
 import { OrderDetailsPage } from '../pages/OrderDetailsPage';
-import { OrderHistoryPage } from '../pages/OrderHistoryPage';
+import { AdminPageLayout } from '../layouts/AdminPageLayout';
 import { UserManagementPage } from '../pages/UserManagementPage';
-import { MenuManagementPage } from '../pages/MenuManagementPage';
+import { MenuCategoriesPage } from '../pages/MenuCategoriesPage';
+import { MenuItemsPage } from '../pages/MenuItemsPage';
+import { OrderHistoryPage } from '../pages/OrderHistoryPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { RoleGuard } from '../components/RoleGuard';
 
@@ -53,28 +55,36 @@ export const router = createBrowserRouter([
         element: <OrderDetailsPage />,
       },
 
-      // Order History
-      {
-        path: 'orders/history',
-        element: <OrderHistoryPage />,
-      },
-
       // Manager/Admin Only
       {
-        path: 'admin/users',
+        path: 'admin',
         element: (
           <RoleGuard admin manager fallback={<Navigate to="/" replace />}>
-            <UserManagementPage />
+            <AdminPageLayout />
           </RoleGuard>
         ),
-      },
-      {
-        path: 'admin/menu',
-        element: (
-          <RoleGuard admin manager fallback={<Navigate to="/" replace />}>
-            <MenuManagementPage />
-          </RoleGuard>
-        ),
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/admin/users" replace />,
+          },
+          {
+            path: 'users',
+            element: <UserManagementPage />,
+          },
+          {
+            path: 'categories',
+            element: <MenuCategoriesPage />,
+          },
+          {
+            path: 'items',
+            element: <MenuItemsPage />,
+          },
+          {
+            path: 'orders',
+            element: <OrderHistoryPage />,
+          },
+        ],
       },
     ],
   },

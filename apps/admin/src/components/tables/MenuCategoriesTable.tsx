@@ -1,0 +1,90 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import type { components } from '@repo/api-client';
+import { DataTable, TableToolbar, Button } from '@repo/ui';
+import { Plus } from 'lucide-react';
+import { fetchClient } from '../../api/client';
+import { createMenuCategoryColumns } from './MenuCategoriesTable.config';
+
+type MenuCategoryResponse = components['schemas']['MenuCategoryResponse'];
+
+type MenuCategoriesTableProps = {
+  onCreateCategory: () => void;
+  onEditCategory: (category: MenuCategoryResponse) => void;
+  onDeleteCategory: (category: MenuCategoryResponse) => void;
+};
+
+export function MenuCategoriesTable({
+  onCreateCategory,
+  onEditCategory,
+  onDeleteCategory,
+}: MenuCategoriesTableProps) {
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(20);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ['menu-categories', page, pageSize],
+    queryFn: async () => {
+      const { data, error } = await fetchClient.GET('/api/v1/menu/category', {
+        params: {
+          query: {
+            page,
+            size: pageSize,
+          },
+        },
+      });
+
+      if (error) {
+        throw new Error('Failed to fetch categories');
+      }
+
+      return data;
+    },
+  });
+
+  const columns = createMenuCategoryColumns({
+    onEdit: onEditCategory,
+    onDelete: onDeleteCategory,
+  });
+
+  return (
+    <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <TableToolbar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search categories..."
+          showSearchInfo={true}
+          searchInfoMessage="Search filters data on the current page."
+        />
+        <Button onClick={onCreateCategory}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Category
+        </Button>
+      </div>
+
+      <DataTable
+        columns={columns}
+        data={data?.content}
+        loading={isLoading}
+        fetching={isFetching}
+        noDataMessage="No categories found."
+        pagination={
+          data
+            ? {
+                page,
+                pageSize,
+                total: data.totalElements || 0,
+              }
+            : undefined
+        }
+        onPaginationChange={({ page, pageSize }) => {
+          setPage(page);
+          setPageSize(pageSize);
+        }}
+        searchQuery={searchQuery}
+      />
+    </div>
+  );
+}

@@ -12,7 +12,7 @@ export function UserManagementPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="bg-background p-8">
       <div className="mb-6">
         <h1 className="text-4xl font-bold mb-2 text-foreground">User Management</h1>
         <p className="text-muted-foreground">Manage users and their roles</p>
