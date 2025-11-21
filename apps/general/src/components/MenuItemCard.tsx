@@ -1,5 +1,5 @@
 import type { components } from '@repo/api-client';
-import { Badge, Button, Card, CardContent } from '@repo/ui';
+import { Badge, Button, Card, CardContent, Plus, Minus, Trash2 } from '@repo/ui';
 import { SPICE_LEVEL_LABELS, SPICE_LEVEL_COLORS, DIETARY_BADGES } from '../constants/menu';
 import { useCartStore } from '../stores/cart';
 
@@ -11,8 +11,13 @@ interface MenuItemCardProps {
 }
 
 export function MenuItemCard({ item, onClick }: MenuItemCardProps) {
-  const getItemQuantity = useCartStore((state) => state.getItemQuantity);
-  const quantity = item.id ? getItemQuantity(item.id) : 0;
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const quantity = useCartStore((state) =>
+    item.id && item.version !== undefined
+      ? (state.items.find((i) => i.itemId === item.id && i.version === item.version)?.quantity ?? 0)
+      : 0
+  );
 
   return (
     <Card
@@ -33,14 +38,14 @@ export function MenuItemCard({ item, onClick }: MenuItemCardProps) {
 
         <div className="flex flex-wrap gap-1 mb-3">
           {item.spiceLevel && item.spiceLevel !== 'NONE' && (
-            <Badge variant="secondary" className={`text-xs ${SPICE_LEVEL_COLORS[item.spiceLevel]}`}>
+            <Badge className={`cursor-default text-xs ${SPICE_LEVEL_COLORS[item.spiceLevel]}`}>
               {SPICE_LEVEL_LABELS[item.spiceLevel]}
             </Badge>
           )}
           {DIETARY_BADGES.map(
             (badge) =>
               item[badge.key] && (
-                <Badge key={badge.key} variant="secondary" className={`text-xs ${badge.color}`}>
+                <Badge key={badge.key} className={`cursor-default text-xs ${badge.color}`}>
                   {badge.icon} {badge.label}
                 </Badge>
               )
@@ -48,16 +53,61 @@ export function MenuItemCard({ item, onClick }: MenuItemCardProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
-            size="sm"
-          >
-            Add to Order
-          </Button>
-          {quantity > 0 && (
-            <Badge variant="default" className="px-2 py-1 bg-amber-600">
-              {quantity} in cart
-            </Badge>
+          {quantity > 0 ? (
+            <>
+              <div className="flex items-center gap-1 flex-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (item.id && item.version !== undefined) {
+                      updateQuantity(item.id, item.version, quantity - 1);
+                    }
+                  }}
+                  className="h-8 w-8 p-0"
+                >
+                  <Minus className="h-3 w-3" />
+                </Button>
+                <span className="text-sm font-semibold w-8 text-center">{quantity}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (item.id && item.version !== undefined) {
+                      updateQuantity(item.id, item.version, quantity + 1);
+                    }
+                  }}
+                  className="h-8 w-8 p-0"
+                >
+                  <Plus className="h-3 w-3" />
+                </Button>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (item.id && item.version !== undefined) {
+                    removeItem(item.id, item.version);
+                  }
+                }}
+                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+              <Badge className="cursor-default px-2 py-1 bg-amber-600 text-white hover:bg-amber-600 hover:text-white">
+                in cart
+              </Badge>
+            </>
+          ) : (
+            <Button
+              className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+              size="sm"
+            >
+              Add to Order
+            </Button>
           )}
         </div>
       </CardContent>

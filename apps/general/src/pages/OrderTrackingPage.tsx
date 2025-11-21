@@ -84,7 +84,10 @@ export function OrderTrackingPage() {
             <p className="text-gray-600 mb-6">
               {error instanceof Error ? error.message : 'Unable to load order details'}
             </p>
-            <Button onClick={() => navigate('/')} className="bg-amber-600 hover:bg-amber-700">
+            <Button
+              onClick={() => navigate('/')}
+              className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+            >
               Go Home
             </Button>
           </CardContent>
@@ -249,7 +252,7 @@ export function OrderTrackingPage() {
             <div className="flex gap-4">
               <Button
                 onClick={() => navigate('/menu')}
-                className="flex-1 bg-amber-600 hover:bg-amber-700"
+                className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
               >
                 Order Again
               </Button>

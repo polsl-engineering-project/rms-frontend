@@ -15,10 +15,13 @@ interface ItemDetailDialogProps {
 export function ItemDetailDialog({ item, open, onOpenChange }: ItemDetailDialogProps) {
   const addItem = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
-  const getItemQuantity = useCartStore((state) => state.getItemQuantity);
 
   const [quantity, setQuantity] = useState(1);
-  const cartQuantity = item?.id ? getItemQuantity(item.id) : 0;
+  const cartQuantity = useCartStore((state) =>
+    item?.id && item?.version !== undefined
+      ? (state.items.find((i) => i.itemId === item.id && i.version === item.version)?.quantity ?? 0)
+      : 0
+  );
 
   useEffect(() => {
     if (item && open) {
@@ -29,16 +32,17 @@ export function ItemDetailDialog({ item, open, onOpenChange }: ItemDetailDialogP
   if (!item) return null;
 
   const handleAddOrUpdate = () => {
-    if (!item.id) return;
+    if (!item.id || item.version === undefined) return;
 
     if (cartQuantity > 0) {
-      updateQuantity(item.id, quantity);
+      updateQuantity(item.id, item.version, quantity);
     } else {
       addItem(
         {
           itemId: item.id,
           name: item.name || '',
           price: item.price || 0,
+          version: item.version,
         },
         quantity
       );
@@ -49,7 +53,7 @@ export function ItemDetailDialog({ item, open, onOpenChange }: ItemDetailDialogP
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="h-64 bg-gradient-to-br from-purple-400 via-pink-400 to-orange-400 -mx-6 -mt-6 mb-4" />
+        <div className="h-64 bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 -mx-6 -mt-6 mb-4" />
 
         <div className="space-y-4">
           <div>
@@ -61,14 +65,14 @@ export function ItemDetailDialog({ item, open, onOpenChange }: ItemDetailDialogP
 
           <div className="flex flex-wrap gap-2">
             {item.spiceLevel && item.spiceLevel !== 'NONE' && (
-              <Badge variant="secondary" className={SPICE_LEVEL_COLORS[item.spiceLevel]}>
+              <Badge className={`cursor-default ${SPICE_LEVEL_COLORS[item.spiceLevel]}`}>
                 {SPICE_LEVEL_LABELS[item.spiceLevel]}
               </Badge>
             )}
             {DIETARY_BADGES.map(
               (badge) =>
                 item[badge.key] && (
-                  <Badge key={badge.key} variant="secondary" className={badge.color}>
+                  <Badge key={badge.key} className={`cursor-default ${badge.color}`}>
                     {badge.icon} {badge.label}
                   </Badge>
                 )
@@ -111,7 +115,11 @@ export function ItemDetailDialog({ item, open, onOpenChange }: ItemDetailDialogP
             <p className="text-sm text-gray-600">Currently {cartQuantity} in cart</p>
           )}
 
-          <Button className="w-full" size="lg" onClick={handleAddOrUpdate}>
+          <Button
+            className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+            size="lg"
+            onClick={handleAddOrUpdate}
+          >
             {cartQuantity > 0 ? 'Update Quantity' : 'Add to Order'}
           </Button>
         </div>

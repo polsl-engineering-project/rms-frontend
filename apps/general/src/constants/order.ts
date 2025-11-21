@@ -29,32 +29,32 @@ export const ORDER_STATUS_CONFIG: Record<
 > = {
   PLACED: {
     label: 'Order Placed',
-    color: 'text-amber-700',
-    bgColor: 'bg-amber-100',
+    color: 'text-amber-700 hover:text-amber-700',
+    bgColor: 'bg-amber-100 hover:bg-amber-100',
   },
   ACCEPTED: {
     label: 'Accepted',
-    color: 'text-green-700',
-    bgColor: 'bg-green-100',
+    color: 'text-green-700 hover:text-green-700',
+    bgColor: 'bg-green-100 hover:bg-green-100',
   },
   READY: {
     label: 'Ready',
-    color: 'text-blue-700',
-    bgColor: 'bg-blue-100',
+    color: 'text-blue-700 hover:text-blue-700',
+    bgColor: 'bg-blue-100 hover:bg-blue-100',
   },
   IN_DELIVERY: {
     label: 'Out for Delivery',
-    color: 'text-purple-700',
-    bgColor: 'bg-purple-100',
+    color: 'text-purple-700 hover:text-purple-700',
+    bgColor: 'bg-purple-100 hover:bg-purple-100',
   },
   COMPLETED: {
     label: 'Completed',
-    color: 'text-gray-700',
-    bgColor: 'bg-gray-100',
+    color: 'text-gray-700 hover:text-gray-700',
+    bgColor: 'bg-gray-100 hover:bg-gray-100',
   },
   CANCELLED: {
     label: 'Cancelled',
-    color: 'text-red-700',
-    bgColor: 'bg-red-100',
+    color: 'text-red-700 hover:text-red-700',
+    bgColor: 'bg-red-100 hover:bg-red-100',
   },
 };

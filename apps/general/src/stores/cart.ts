@@ -6,6 +6,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
+  version: number;
   addedAt: number;
 }
 
@@ -16,10 +17,10 @@ interface CartState {
 
 interface CartActions {
   addItem: (item: Omit<CartItem, 'quantity' | 'addedAt'>, quantity?: number) => void;
-  removeItem: (itemId: string) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
+  removeItem: (itemId: string, version: number) => void;
+  updateQuantity: (itemId: string, version: number, quantity: number) => void;
   clearCart: () => void;
-  getItemQuantity: (itemId: string) => number;
+  getItemQuantity: (itemId: string, version: number) => number;
   getTotalItems: () => number;
   getTotalPrice: () => number;
   getCartForOrder: () => Array<{ menuItemId: string; quantity: number; version: number }>;
@@ -50,12 +51,16 @@ export const useCartStore = create<CartStore>()(
 
       addItem: (item, quantity = 1) => {
         set((state) => {
-          const existingItem = state.items.find((i) => i.itemId === item.itemId);
+          const existingItem = state.items.find(
+            (i) => i.itemId === item.itemId && i.version === item.version
+          );
 
           if (existingItem) {
             return {
               items: state.items.map((i) =>
-                i.itemId === item.itemId ? { ...i, quantity: i.quantity + quantity } : i
+                i.itemId === item.itemId && i.version === item.version
+                  ? { ...i, quantity: i.quantity + quantity }
+                  : i
               ),
             };
           }
@@ -73,20 +78,22 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      removeItem: (itemId) => {
+      removeItem: (itemId, version) => {
         set((state) => ({
-          items: state.items.filter((i) => i.itemId !== itemId),
+          items: state.items.filter((i) => !(i.itemId === itemId && i.version === version)),
         }));
       },
 
-      updateQuantity: (itemId, quantity) => {
+      updateQuantity: (itemId, version, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(itemId);
+          get().removeItem(itemId, version);
           return;
         }
 
         set((state) => ({
-          items: state.items.map((i) => (i.itemId === itemId ? { ...i, quantity } : i)),
+          items: state.items.map((i) =>
+            i.itemId === itemId && i.version === version ? { ...i, quantity } : i
+          ),
         }));
       },
 
@@ -97,8 +104,8 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      getItemQuantity: (itemId) => {
-        const item = get().items.find((i) => i.itemId === itemId);
+      getItemQuantity: (itemId, version) => {
+        const item = get().items.find((i) => i.itemId === itemId && i.version === version);
         return item?.quantity ?? 0;
       },
 
@@ -114,7 +121,7 @@ export const useCartStore = create<CartStore>()(
         return get().items.map((item) => ({
           menuItemId: item.itemId,
           quantity: item.quantity,
-          version: 1, // Assuming version 1 for now
+          version: item.version,
         }));
       },
     }),

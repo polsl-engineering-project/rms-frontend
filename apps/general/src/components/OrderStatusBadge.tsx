@@ -19,7 +19,7 @@ export function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
   const Icon = STATUS_ICONS[status as keyof typeof STATUS_ICONS] || Package;
 
   return (
-    <Badge className={`${config.bgColor} ${config.color} gap-2 px-4 py-2 text-sm font-medium`}>
+    <Badge className={`cursor-default ${config.bgColor} ${config.color} gap-2 px-4 py-2 text-sm font-medium`}>
       <Icon className="w-4 h-4" />
       {config.label}
     </Badge>
