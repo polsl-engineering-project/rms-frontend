@@ -1,4 +1,3 @@
-import * as React from 'react';
 import type { FormikContextType } from 'formik';
 import { PasswordInput, type PasswordInputProps } from './PasswordInput';
 
