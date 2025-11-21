@@ -14,7 +14,9 @@ export function NotFoundPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <Link to="/" className="w-full">
-            <Button className="w-full">Return to Home</Button>
+            <Button className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700">
+              Return to Home
+            </Button>
           </Link>
           <p className="text-sm text-gray-500 text-center mt-2">
             If you believe this is an error, please contact support.

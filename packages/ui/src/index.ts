@@ -140,4 +140,5 @@ export {
   Key,
   Eye,
   EyeOff,
+  Trash2,
 } from 'lucide-react';

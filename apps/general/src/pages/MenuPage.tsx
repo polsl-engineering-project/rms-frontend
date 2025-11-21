@@ -26,8 +26,9 @@ export function MenuPage() {
   const [selectedItem, setSelectedItem] = useState<MenuItemResponse | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
-  const cartItemCount = getTotalItems();
+  const cartItemCount = useCartStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0)
+  );
 
   const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
@@ -117,7 +118,9 @@ export function MenuPage() {
               <ShoppingCart className="w-5 h-5 mr-2" />
               Cart
               {cartItemCount > 0 && (
-                <Badge className="ml-2 px-2 bg-amber-600">{cartItemCount}</Badge>
+                <Badge className="ml-2 px-2 bg-amber-600 text-white hover:bg-amber-600 hover:text-white cursor-default">
+                  {cartItemCount}
+                </Badge>
               )}
             </Button>
           </div>
