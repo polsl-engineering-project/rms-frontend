@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Key } from 'lucide-react';
 import type { components } from '@repo/api-client';
 import {
   Column,
@@ -25,6 +25,7 @@ const ROLE_COLORS: Record<string, 'default' | 'secondary' | 'destructive' | 'out
 type UserTableActionsProps = {
   onEdit: (user: UserResponse) => void;
   onDelete: (user: UserResponse) => void;
+  onChangePassword: (user: UserResponse) => void;
   currentUser: CurrentUser | null;
   adminCount: number;
 };
@@ -32,6 +33,7 @@ type UserTableActionsProps = {
 export const createUserColumns = ({
   onEdit,
   onDelete,
+  onChangePassword,
   currentUser,
   adminCount,
 }: UserTableActionsProps): Column<UserResponse>[] => [
@@ -78,12 +80,13 @@ export const createUserColumns = ({
       const isSelf = currentUser?.id === user.id;
       const isLastAdmin = user.role === 'ADMIN' && adminCount === 1;
       const cannotDelete = isSelf || isLastAdmin;
+      const isAdmin = user.role === 'ADMIN';
 
-      let tooltipMessage = '';
+      let deleteTooltipMessage = '';
       if (isSelf) {
-        tooltipMessage = 'You cannot delete your own account';
+        deleteTooltipMessage = 'You cannot delete your own account';
       } else if (isLastAdmin) {
-        tooltipMessage = 'Cannot delete the last admin user';
+        deleteTooltipMessage = 'Cannot delete the last admin user';
       }
 
       return (
@@ -107,6 +110,34 @@ export const createUserColumns = ({
                   <Button
                     variant="ghost"
                     size="icon"
+                    className="h-8 w-8"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!isAdmin) {
+                        onChangePassword(user);
+                      }
+                    }}
+                    disabled={isAdmin}
+                  >
+                    <Key className="h-4 w-4" />
+                    <span className="sr-only">Change password</span>
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              {isAdmin && (
+                <TooltipContent>
+                  <p>Admin passwords cannot be changed</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="h-8 w-8 text-destructive hover:text-destructive"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -123,7 +154,7 @@ export const createUserColumns = ({
               </TooltipTrigger>
               {cannotDelete && (
                 <TooltipContent>
-                  <p>{tooltipMessage}</p>
+                  <p>{deleteTooltipMessage}</p>
                 </TooltipContent>
               )}
             </Tooltip>

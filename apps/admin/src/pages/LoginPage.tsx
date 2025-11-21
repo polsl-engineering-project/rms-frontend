@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLogin } from '../hooks/useAuth';
 import { useAuthStore } from '../stores/auth';
+import { InputBase, PasswordInput } from '../components/inputs';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -43,32 +44,30 @@ export function LoginPage() {
           )}
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-              Username
-            </label>
-            <input
+            <InputBase
               id="username"
-              type="text"
+              name="username"
+              label="Username"
+              required
+              showRequiredIndicator={false}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 bg-transparent text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
               autoFocus
+              containerClassName="mb-0"
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-              Password
-            </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
+              name="password"
+              label="Password"
+              required
+              showRequiredIndicator={false}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full bg-transparent py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
               autoComplete="current-password"
+              containerClassName="mb-0"
             />
           </div>
 

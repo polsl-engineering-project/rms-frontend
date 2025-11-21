@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { components } from '@repo/api-client';
 import { UserDialog } from '../components/dialogs/UserDialog';
 import { DeleteUserDialog } from '../components/dialogs/DeleteUserDialog';
+import { ChangeUserPasswordDialog } from '../components/dialogs/ChangeUserPasswordDialog';
 import { UserTable } from '../components/tables/UserTable';
 
 type UserResponse = components['schemas']['UserResponse'];
@@ -9,6 +10,7 @@ type UserResponse = components['schemas']['UserResponse'];
 export function UserManagementPage() {
   const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
   const [deletingUser, setDeletingUser] = useState<UserResponse | null>(null);
+  const [changingPasswordUser, setChangingPasswordUser] = useState<UserResponse | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   return (
@@ -22,6 +24,7 @@ export function UserManagementPage() {
         onCreateUser={() => setIsCreateDialogOpen(true)}
         onEditUser={setEditingUser}
         onDeleteUser={setDeletingUser}
+        onChangePassword={setChangingPasswordUser}
       />
 
       {/* Create/Edit Dialog */}
@@ -45,6 +48,17 @@ export function UserManagementPage() {
           }
         }}
         user={deletingUser}
+      />
+
+      {/* Change Password Dialog */}
+      <ChangeUserPasswordDialog
+        open={!!changingPasswordUser}
+        onOpenChange={(open: boolean) => {
+          if (!open) {
+            setChangingPasswordUser(null);
+          }
+        }}
+        user={changingPasswordUser}
       />
     </div>
   );

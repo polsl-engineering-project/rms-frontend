@@ -56,12 +56,12 @@ export function HomePage() {
       </div>
 
       {/* Portal Cards */}
-      <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div className="flex w-full gap-8 max-w-5xl mx-auto">
         {portals.map((portal) => (
           <RoleGuard key={portal.id} {...roleArrayToRoleObject(portal.roles)}>
             <button
               onClick={() => navigate(portal.path)}
-              className="group relative overflow-hidden rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-500"
+              className="group relative overflow-hidden w-full rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-500"
             >
               <Card className="h-full border-0">
                 {/* Gradient Background */}

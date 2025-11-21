@@ -13,9 +13,15 @@ type UserTableProps = {
   onCreateUser: () => void;
   onEditUser: (user: UserResponse) => void;
   onDeleteUser: (user: UserResponse) => void;
+  onChangePassword: (user: UserResponse) => void;
 };
 
-export function UserTable({ onCreateUser, onEditUser, onDeleteUser }: UserTableProps) {
+export function UserTable({
+  onCreateUser,
+  onEditUser,
+  onDeleteUser,
+  onChangePassword,
+}: UserTableProps) {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,6 +54,7 @@ export function UserTable({ onCreateUser, onEditUser, onDeleteUser }: UserTableP
   const columns = createUserColumns({
     onEdit: onEditUser,
     onDelete: onDeleteUser,
+    onChangePassword: onChangePassword,
     currentUser,
     adminCount,
   });

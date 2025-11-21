@@ -137,4 +137,7 @@ export {
   CheckCircle,
   Truck,
   XCircle,
+  Key,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
