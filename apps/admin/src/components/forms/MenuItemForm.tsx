@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import type { components } from '@repo/api-client';
 import {
   Button,
-  Input,
   Label,
   Checkbox,
   Select,
@@ -16,6 +15,7 @@ import {
 import { createMenuItemSchema, updateMenuItemSchema } from './MenuItemForm.validation';
 import { SPICE_LEVELS } from '../../constants';
 import { fetchClient } from '../../api/client';
+import { FormikInput } from '../inputs';
 
 type MenuItemResponse = components['schemas']['MenuItemResponse'];
 type CreateMenuItemRequest = components['schemas']['CreateMenuItemRequest'];
@@ -98,88 +98,51 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
     <form onSubmit={formik.handleSubmit}>
       <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
         <div className="grid gap-2">
-          <Label htmlFor="name">
-            Name <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="name"
+          <FormikInput
+            formik={formik}
             name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            label="Name"
+            required
             disabled={isLoading}
             placeholder="Enter item name"
-            className={formik.touched.name && formik.errors.name ? 'border-destructive' : ''}
           />
-          {formik.touched.name && formik.errors.name && (
-            <p className="text-sm text-destructive">{formik.errors.name}</p>
-          )}
-        </div>
-
+        </div>{' '}
         <div className="grid gap-2">
-          <Label htmlFor="description">Description</Label>
-          <Input
-            id="description"
+          <FormikInput
+            formik={formik}
             name="description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            label="Description"
             disabled={isLoading}
             placeholder="Enter description (optional)"
-            className={
-              formik.touched.description && formik.errors.description ? 'border-destructive' : ''
-            }
           />
-          {formik.touched.description && formik.errors.description && (
-            <p className="text-sm text-destructive">{formik.errors.description}</p>
-          )}
-        </div>
-
+        </div>{' '}
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="price">
-              Price <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="price"
+            <FormikInput
+              formik={formik}
               name="price"
+              label="Price"
+              required
               type="number"
               step="0.01"
               min="0"
-              value={formik.values.price}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               disabled={isLoading}
               placeholder="0.00"
-              className={formik.touched.price && formik.errors.price ? 'border-destructive' : ''}
             />
-            {formik.touched.price && formik.errors.price && (
-              <p className="text-sm text-destructive">{formik.errors.price}</p>
-            )}
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="calories">Calories</Label>
-            <Input
-              id="calories"
+            <FormikInput
+              formik={formik}
               name="calories"
+              label="Calories"
               type="number"
               min="0"
-              value={formik.values.calories || ''}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               disabled={isLoading}
               placeholder="Optional"
-              className={
-                formik.touched.calories && formik.errors.calories ? 'border-destructive' : ''
-              }
             />
-            {formik.touched.calories && formik.errors.calories && (
-              <p className="text-sm text-destructive">{formik.errors.calories}</p>
-            )}
           </div>
-        </div>
-
+        </div>{' '}
         <div className="grid gap-2">
           <Label htmlFor="categoryId">
             Category <span className="text-destructive">*</span>
@@ -209,26 +172,15 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
             <p className="text-sm text-destructive">{formik.errors.categoryId}</p>
           )}
         </div>
-
         <div className="grid gap-2">
-          <Label htmlFor="allergens">Allergens</Label>
-          <Input
-            id="allergens"
+          <FormikInput
+            formik={formik}
             name="allergens"
-            value={formik.values.allergens}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            label="Allergens"
             disabled={isLoading}
             placeholder="e.g., nuts, dairy, gluten"
-            className={
-              formik.touched.allergens && formik.errors.allergens ? 'border-destructive' : ''
-            }
           />
-          {formik.touched.allergens && formik.errors.allergens && (
-            <p className="text-sm text-destructive">{formik.errors.allergens}</p>
-          )}
-        </div>
-
+        </div>{' '}
         <div className="grid gap-2">
           <Label htmlFor="spiceLevel">
             Spice Level <span className="text-destructive">*</span>
@@ -258,7 +210,6 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
             <p className="text-sm text-destructive">{formik.errors.spiceLevel}</p>
           )}
         </div>
-
         <div className="grid gap-3">
           <Label>Dietary Information</Label>
           <div className="flex flex-col gap-2">
@@ -297,7 +248,6 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
             </div>
           </div>
         </div>
-
         {formik.errors.submit && (
           <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
             {formik.errors.submit}

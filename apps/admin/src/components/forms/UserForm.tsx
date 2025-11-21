@@ -3,7 +3,6 @@ import { useFormik } from 'formik';
 import type { components } from '@repo/api-client';
 import {
   Button,
-  Input,
   Label,
   Select,
   SelectContent,
@@ -13,6 +12,7 @@ import {
 } from '@repo/ui';
 import { ROLES, createUserSchema, updateUserSchema } from './UserForm.validation';
 import { useAuthStore } from '../../stores/auth';
+import { FormikInput, FormikPasswordInput } from '../inputs';
 
 type UserResponse = components['schemas']['UserResponse'];
 type CreateUserRequest = components['schemas']['CreateUserRequest'];
@@ -70,110 +70,50 @@ export function UserForm({ user, isLoading, onSubmit, onCancel, open }: UserForm
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="grid gap-4 py-4">
-        <div className="grid gap-2">
-          <Label htmlFor="username">
-            Username <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="username"
-            name="username"
-            value={formik.values.username}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            disabled={isEdit || isLoading}
-            placeholder="Enter username"
-            className={
-              formik.touched.username && formik.errors.username ? 'border-destructive' : ''
-            }
-          />
-          {formik.touched.username && formik.errors.username && (
-            <p className="text-sm text-destructive">{formik.errors.username}</p>
-          )}
-        </div>
+        <FormikInput
+          formik={formik}
+          name="username"
+          label="Username"
+          required
+          disabled={isEdit || isLoading}
+          placeholder="Enter username"
+        />
 
         {!isEdit && (
-          <div className="grid gap-2">
-            <Label htmlFor="password">
-              Password <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              disabled={isLoading}
-              placeholder="Enter password"
-              className={
-                formik.touched.password && formik.errors.password ? 'border-destructive' : ''
-              }
-            />
-            {formik.touched.password && formik.errors.password && (
-              <p className="text-sm text-destructive">{formik.errors.password}</p>
-            )}
-          </div>
+          <FormikPasswordInput
+            formik={formik}
+            name="password"
+            label="Password"
+            required
+            disabled={isLoading}
+            placeholder="Enter password"
+          />
         )}
 
-        <div className="grid gap-2">
-          <Label htmlFor="firstName">First Name</Label>
-          <Input
-            id="firstName"
-            name="firstName"
-            value={formik.values.firstName}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            disabled={isLoading}
-            placeholder="Enter first name"
-            className={
-              formik.touched.firstName && formik.errors.firstName ? 'border-destructive' : ''
-            }
-          />
-          {formik.touched.firstName && formik.errors.firstName && (
-            <p className="text-sm text-destructive">{formik.errors.firstName}</p>
-          )}
-        </div>
+        <FormikInput
+          formik={formik}
+          name="firstName"
+          label="First Name"
+          disabled={isLoading}
+          placeholder="Enter first name"
+        />
 
-        <div className="grid gap-2">
-          <Label htmlFor="lastName">Last Name</Label>
-          <Input
-            id="lastName"
-            name="lastName"
-            value={formik.values.lastName}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            disabled={isLoading}
-            placeholder="Enter last name"
-            className={
-              formik.touched.lastName && formik.errors.lastName ? 'border-destructive' : ''
-            }
-          />
-          {formik.touched.lastName && formik.errors.lastName && (
-            <p className="text-sm text-destructive">{formik.errors.lastName}</p>
-          )}
-        </div>
+        <FormikInput
+          formik={formik}
+          name="lastName"
+          label="Last Name"
+          disabled={isLoading}
+          placeholder="Enter last name"
+        />
 
-        <div className="grid gap-2">
-          <Label htmlFor="phoneNumber">
-            Phone Number <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="phoneNumber"
-            name="phoneNumber"
-            value={formik.values.phoneNumber}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            disabled={isLoading}
-            placeholder="Enter phone number"
-            className={
-              formik.touched.phoneNumber && formik.errors.phoneNumber ? 'border-destructive' : ''
-            }
-          />
-          {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-            <p className="text-sm text-destructive">{formik.errors.phoneNumber}</p>
-          )}
-        </div>
-
+        <FormikInput
+          formik={formik}
+          name="phoneNumber"
+          label="Phone Number"
+          required
+          disabled={isLoading}
+          placeholder="Enter phone number"
+        />
         <div className="grid gap-2">
           <Label htmlFor="role">
             Role <span className="text-destructive">*</span>
@@ -202,13 +142,10 @@ export function UserForm({ user, isLoading, onSubmit, onCancel, open }: UserForm
           )}
           {cannotChangeRole && (
             <p className="text-sm text-muted-foreground">
-              {isSelf
-                ? 'You cannot change your own role'
-                : 'Admin role cannot be changed'}
+              {isSelf ? 'You cannot change your own role' : 'Admin role cannot be changed'}
             </p>
           )}
         </div>
-
         {formik.errors.submit && (
           <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
             {formik.errors.submit}

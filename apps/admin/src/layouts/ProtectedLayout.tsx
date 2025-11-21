@@ -9,11 +9,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   Badge,
   LogOut,
   ChevronDown,
+  Key,
 } from '@repo/ui';
+import { ChangePasswordDialog } from '../components/dialogs/ChangePasswordDialog';
 
 export function ProtectedLayout() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
@@ -22,6 +25,7 @@ export function ProtectedLayout() {
   const navigate = useNavigate();
   const { logout } = useAuthActions();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   // If not authenticated, redirect to login
   if (!isAuthenticated) {
@@ -92,8 +96,20 @@ export function ProtectedLayout() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-100 bg-white mt-0.5 rounded-t-none">
+                  {user.role !== 'ADMIN' && (
+                    <>
+                      <DropdownMenuItem
+                        className="cursor-pointer py-3 px-4"
+                        onClick={() => setIsChangePasswordOpen(true)}
+                      >
+                        <Key className="mr-2 h-4 w-4" />
+                        <span>Change Password</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   <DropdownMenuItem
-                    className="cursor-pointer w-[9.5rem] text-red-600 focus:text-red-700 focus:bg-red-50 py-3 px-4 "
+                    className="cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50 py-3 px-4 "
                     onClick={() => logout()}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
@@ -110,6 +126,9 @@ export function ProtectedLayout() {
       <main className="mx-auto max-w-7xl w-full flex-1 flex py-8">
         <Outlet />
       </main>
+
+      {/* Change Password Dialog */}
+      <ChangePasswordDialog open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen} />
     </div>
   );
 }
