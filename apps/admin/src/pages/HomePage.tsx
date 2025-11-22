@@ -1,48 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@repo/ui';
-import { UserRole } from '../types';
+import { ArrowRight } from 'lucide-react';
 import { RoleGuard } from '../components/RoleGuard';
 import { roleArrayToRoleObject } from '../utils/roleArrayToRoleObject';
-
-type Portal = {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  path: string;
-  color: string;
-  roles: UserRole[];
-};
-
-const portals: Portal[] = [
-  {
-    id: 'kitchen',
-    title: 'Kitchen Portal',
-    description: 'View and manage kitchen orders',
-    icon: '👨‍🍳',
-    path: '/kitchen',
-    color: 'from-orange-500 to-red-600',
-    roles: ['ADMIN', 'COOK', 'MANAGER'],
-  },
-  {
-    id: 'waiter',
-    title: 'Waiter Portal',
-    description: 'Manage orders and tables',
-    icon: '🍽️',
-    path: '/waiter',
-    color: 'from-blue-500 to-indigo-600',
-    roles: ['ADMIN', 'WAITER', 'MANAGER'],
-  },
-  {
-    id: 'manager',
-    title: 'Manager Portal',
-    description: 'Administration and settings',
-    icon: '⚙️',
-    path: '/admin',
-    color: 'from-purple-500 to-pink-600',
-    roles: ['ADMIN', 'MANAGER'],
-  },
-];
+import { PORTALS } from '../constants/portals';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -57,7 +18,7 @@ export function HomePage() {
 
       {/* Portal Cards */}
       <div className="flex w-full gap-8 max-w-5xl mx-auto">
-        {portals.map((portal) => (
+        {PORTALS.map((portal) => (
           <RoleGuard key={portal.id} {...roleArrayToRoleObject(portal.roles)}>
             <button
               onClick={() => navigate(portal.path)}
@@ -72,8 +33,8 @@ export function HomePage() {
                 {/* Content */}
                 <CardHeader className="relative pt-12 pb-12 text-center">
                   {/* Icon */}
-                  <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform">
-                    {portal.icon}
+                  <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform flex justify-center">
+                    <portal.icon className="w-20 h-20" />
                   </div>
 
                   {/* Title */}
@@ -86,19 +47,7 @@ export function HomePage() {
 
                   {/* Arrow indicator on hover */}
                   <div className="mt-6 text-gray-400 group-hover:text-gray-600 transition-colors">
-                    <svg
-                      className="w-6 h-6 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
+                    <ArrowRight className="w-6 h-6 mx-auto" />
                   </div>
                 </CardHeader>
               </Card>
