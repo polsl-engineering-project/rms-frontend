@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   Button,
+  toast,
 } from '@repo/ui';
 import { fetchClient } from '../../api/client';
 import { useAuthStore } from '../../stores/auth';
@@ -56,6 +57,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
       }
     },
     onSuccess: () => {
+      toast.success('Password changed successfully');
       onOpenChange(false);
       formik.resetForm();
     },

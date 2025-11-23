@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   Button,
+  toast,
 } from '@repo/ui';
 import { fetchClient } from '../../api/client';
 import { queryClient } from '../../lib/queryClient';
@@ -40,6 +41,7 @@ export function DeleteMenuItemDialog({ open, onOpenChange, item }: DeleteMenuIte
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
+      toast.success('Menu item deleted successfully');
       onOpenChange(false);
     },
     onError: (error) => {

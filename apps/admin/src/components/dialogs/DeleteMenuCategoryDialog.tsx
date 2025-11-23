@@ -11,6 +11,7 @@ import {
   Button,
   Alert,
   AlertDescription,
+  toast,
 } from '@repo/ui';
 import { AlertTriangle } from 'lucide-react';
 import { fetchClient } from '../../api/client';
@@ -100,6 +101,7 @@ export function DeleteMenuCategoryDialog({
       queryClient.invalidateQueries({ queryKey: ['menu-categories'] });
       queryClient.invalidateQueries({ queryKey: ['menu-categories-all'] });
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
+      toast.success('Category deleted successfully');
       onOpenChange(false);
     },
     onError: (error) => {

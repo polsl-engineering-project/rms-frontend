@@ -8,6 +8,7 @@ export interface ApiClientConfig {
   getToken: () => string | undefined | null | Promise<string | undefined | null>;
   onUnauthorized?: () => void | Promise<void>; // Callback when 401 occurs
   onBeforeRequest?: (url: string) => void | Promise<void>; // Callback before each request
+  onError?: (response: Response) => void | Promise<void>; // Callback when response is not ok (excluding 401 if handled by onUnauthorized)
 }
 
 // Auth endpoints that should skip the onBeforeRequest callback
@@ -40,6 +41,8 @@ export function createApiClient(config: ApiClientConfig) {
       // Handle 401 Unauthorized errors
       if (response.status === 401 && config.onUnauthorized) {
         await config.onUnauthorized();
+      } else if (!response.ok && config.onError) {
+        await config.onError(response);
       }
 
       return response;
@@ -64,3 +67,14 @@ export function createApiClient(config: ApiClientConfig) {
 }
 
 export type { paths };
+
+export const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
+  400: 'Bad Request',
+  401: 'Unauthorized',
+  403: 'Forbidden',
+  404: 'Not Found',
+  500: 'Internal Server Error',
+  502: 'Bad Gateway',
+  503: 'Service Unavailable',
+  504: 'Gateway Timeout',
+};

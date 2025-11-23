@@ -142,3 +142,6 @@ export {
   EyeOff,
   Trash2,
 } from 'lucide-react';
+
+export { Toaster } from './components/ui/sonner';
+export { toast } from 'sonner';

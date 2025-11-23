@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import type { components } from '@repo/api-client';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, toast } from '@repo/ui';
 import { fetchClient } from '../../api/client';
 import { queryClient } from '../../lib/queryClient';
 import { MenuCategoryForm, type MenuCategoryFormValues } from '../forms/MenuCategoryForm';
@@ -33,6 +33,7 @@ export function MenuCategoryDialog({ open, onOpenChange, category }: MenuCategor
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menu-categories'] });
       queryClient.invalidateQueries({ queryKey: ['menu-categories-all'] });
+      toast.success('Category created successfully');
       onOpenChange(false);
     },
   });
@@ -64,6 +65,7 @@ export function MenuCategoryDialog({ open, onOpenChange, category }: MenuCategor
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menu-categories'] });
       queryClient.invalidateQueries({ queryKey: ['menu-categories-all'] });
+      toast.success('Category updated successfully');
       onOpenChange(false);
     },
   });

@@ -13,6 +13,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
+  toast,
 } from '@repo/ui';
 import { fetchClient } from '../../api/client';
 import { queryClient } from '../../lib/queryClient';
@@ -47,6 +48,7 @@ export function DeleteUserDialog({ open, onOpenChange, user }: DeleteUserDialogP
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('User deleted successfully');
       onOpenChange(false);
     },
     onError: (error) => {

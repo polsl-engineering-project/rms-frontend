@@ -6,6 +6,7 @@ import { router } from './router';
 import { AuthProvider } from './providers/AuthProvider';
 import { queryClient } from './lib/queryClient';
 import { setupAuthInterceptors } from './lib/auth-setup';
+import { Toaster } from '@repo/ui';
 import './index.css';
 
 setupAuthInterceptors();
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RouterProvider router={router} />
+        <Toaster />
       </AuthProvider>
     </QueryClientProvider>
   </StrictMode>

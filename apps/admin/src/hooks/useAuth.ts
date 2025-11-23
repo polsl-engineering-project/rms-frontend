@@ -3,6 +3,7 @@ import { fetchClient } from '../api/client';
 import { useAuthStore } from '../stores/auth';
 import type { paths } from '@repo/api-client';
 import type { CurrentUser } from '../types/auth';
+import { toast } from '@repo/ui';
 
 // Type definitions from OpenAPI spec
 type LoginRequest =
@@ -71,6 +72,7 @@ export const useLogin = () => {
 
       // Invalidate queries to trigger user data fetch
       queryClient.invalidateQueries({ queryKey: ['user', 'me'] });
+      toast.success('Logged in successfully');
     },
     onError: (error: Error) => {
       console.error('Login error:', error);
@@ -102,6 +104,7 @@ export const useLogout = () => {
     onSuccess: () => {
       // State already cleared in mutationFn
       console.log('Logout successful');
+      toast.success('Logged out successfully');
     },
     onError: (error: Error) => {
       console.error('Logout error:', error);

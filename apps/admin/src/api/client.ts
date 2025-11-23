@@ -1,5 +1,6 @@
-import { createApiClient } from '@repo/api-client';
+import { createApiClient, DEFAULT_ERROR_MESSAGES } from '@repo/api-client';
 import { getAuthToken, useAuthStore } from '../stores/auth';
+import { toast } from '@repo/ui';
 
 // This will be set by the app initialization in main.tsx
 let onUnauthorizedCallback: (() => void) | undefined;
@@ -52,5 +53,10 @@ export const { $api, fetchClient } = createApiClient({
       
       await refreshPromise;
     }
+  },
+  onError: async (response) => {
+    const data = await response.json().catch(() => ({}));
+    const message = data.message || DEFAULT_ERROR_MESSAGES[response.status] || response.statusText;
+    toast.error(`Error ${response.status}: ${message}`);
   },
 });

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import type { components } from '@repo/api-client';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, toast } from '@repo/ui';
 import { fetchClient } from '../../api/client';
 import { queryClient } from '../../lib/queryClient';
 import { MenuItemForm, type MenuItemFormValues } from '../forms/MenuItemForm';
@@ -32,6 +32,7 @@ export function MenuItemDialog({ open, onOpenChange, item }: MenuItemDialogProps
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
+      toast.success('Menu item created successfully');
       onOpenChange(false);
     },
   });
@@ -62,6 +63,7 @@ export function MenuItemDialog({ open, onOpenChange, item }: MenuItemDialogProps
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menu-items'] });
+      toast.success('Menu item updated successfully');
       onOpenChange(false);
     },
   });

@@ -13,6 +13,7 @@ import {
   Button,
   Alert,
   AlertDescription,
+  toast,
 } from '@repo/ui';
 import { AlertTriangle } from 'lucide-react';
 import { fetchClient } from '../../api/client';
@@ -67,6 +68,7 @@ export function ChangeUserPasswordDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('Password changed successfully');
       onOpenChange(false);
       formik.resetForm();
     },
