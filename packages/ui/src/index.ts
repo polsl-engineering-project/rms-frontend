@@ -141,6 +141,11 @@ export {
   Eye,
   EyeOff,
   Trash2,
+  ChevronLeft,
+  Users,
+  Loader2,
+  Receipt,
+  X,
 } from 'lucide-react';
 
 export { Toaster } from './components/ui/sonner';

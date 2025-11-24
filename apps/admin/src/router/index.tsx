@@ -6,7 +6,6 @@ import { KitchenViewPage } from '../pages/KitchenViewPage';
 import { LiveOrdersPage } from '../pages/LiveOrdersPage';
 import { WaiterDashboardPage } from '../pages/WaiterDashboardPage';
 import { WaiterMenuPage } from '../pages/WaiterMenuPage';
-import { OrderDetailsPage } from '../pages/OrderDetailsPage';
 import { AdminPageLayout } from '../layouts/AdminPageLayout';
 import { UserManagementPage } from '../pages/UserManagementPage';
 import { MenuCategoriesPage } from '../pages/MenuCategoriesPage';
@@ -14,6 +13,9 @@ import { MenuItemsPage } from '../pages/MenuItemsPage';
 import { OrderHistoryPage } from '../pages/OrderHistoryPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { RoleGuard } from '../components/RoleGuard';
+import { BillDetailsPage } from '../pages/BillDetailsPage';
+import { WaiterMenuSelectionPage } from '../pages/WaiterMenuSelectionPage';
+import { WaiterCreateBillPage } from '../pages/WaiterCreateBillPage';
 
 export const router = createBrowserRouter([
   {
@@ -51,8 +53,16 @@ export const router = createBrowserRouter([
         element: <WaiterMenuPage />,
       },
       {
-        path: 'waiter/orders/:orderId',
-        element: <OrderDetailsPage />,
+        path: 'waiter/create',
+        element: <WaiterCreateBillPage />,
+      },
+      {
+        path: 'waiter/bill/:id',
+        element: <BillDetailsPage />,
+      },
+      {
+        path: 'waiter/bill/:id/menu',
+        element: <WaiterMenuSelectionPage />,
       },
 
       // Manager/Admin Only
