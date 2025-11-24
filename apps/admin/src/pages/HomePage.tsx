@@ -33,7 +33,9 @@ export function HomePage() {
                 {/* Content */}
                 <CardHeader className="relative pt-12 pb-12 text-center">
                   {/* Icon */}
-                  <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform flex justify-center">
+                  <div
+                    className={`text-7xl mb-6 transform group-hover:scale-110 transition-transform flex justify-center ${portal.iconColor}`}
+                  >
                     <portal.icon className="w-20 h-20" />
                   </div>
 

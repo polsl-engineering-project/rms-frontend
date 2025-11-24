@@ -268,23 +268,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/bills": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Search and filter bills with pagination */
-        post: operations["searchBills"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/bills/{id}/remove-items": {
         parameters: {
             query?: never;
@@ -464,6 +447,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/bills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search and filter bills with pagination */
+        get: operations["searchBills"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/bills/{id}": {
         parameters: {
             query?: never;
@@ -583,7 +583,7 @@ export interface components {
             customerInfo: components["schemas"]["CustomerInfo"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 16:26:39 */
+            /** @example 10:44:08 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -604,7 +604,7 @@ export interface components {
             address: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 16:26:39 */
+            /** @example 10:44:08 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -655,63 +655,6 @@ export interface components {
             active?: boolean;
             items?: components["schemas"]["MenuItemResponse"][];
         };
-        BillSearchRequest: {
-            statuses?: ("OPEN" | "CLOSED")[];
-            /** Format: date-time */
-            openedFrom?: string;
-            /** Format: date-time */
-            openedTo?: string;
-            /** Format: date-time */
-            closedFrom?: string;
-            /** Format: date-time */
-            closedTo?: string;
-            userId?: string;
-            tableNumbers?: number[];
-            minTotalAmount?: number;
-            maxTotalAmount?: number;
-            menuItemId?: string;
-            /** @enum {string} */
-            sortBy?: "OPENED_AT" | "CLOSED_AT" | "UPDATED_AT" | "TOTAL_AMOUNT" | "TABLE_NUMBER" | "USER_ID";
-            /** @enum {string} */
-            sortDirection?: "ASC" | "DESC";
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-        };
-        BillPageResponse: {
-            content?: components["schemas"]["BillSummaryResponse"][];
-            /** Format: int32 */
-            pageNumber?: number;
-            /** Format: int32 */
-            pageSize?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-            first?: boolean;
-            last?: boolean;
-            hasPrevious?: boolean;
-            hasNext?: boolean;
-        };
-        BillSummaryResponse: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: int32 */
-            tableNumber?: number;
-            /** @enum {string} */
-            status?: "OPEN" | "CLOSED";
-            userId?: string;
-            totalAmount?: number;
-            /** Format: int32 */
-            itemCount?: number;
-            /** Format: date-time */
-            openedAt?: string;
-            /** Format: date-time */
-            closedAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
         RemoveItemsFromBillRequest: {
             removedLines: components["schemas"]["RemoveLine"][];
         };
@@ -759,11 +702,11 @@ export interface components {
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
-            first?: boolean;
-            last?: boolean;
             empty?: boolean;
         };
         PageableObject: {
@@ -801,11 +744,11 @@ export interface components {
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
-            first?: boolean;
-            last?: boolean;
             empty?: boolean;
         };
         PageMenuCategoryResponse: {
@@ -819,12 +762,71 @@ export interface components {
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
+            empty?: boolean;
+        };
+        BillPageResponse: {
+            content?: components["schemas"]["BillSummaryResponse"][];
+            /** Format: int32 */
+            pageNumber?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
             first?: boolean;
             last?: boolean;
-            empty?: boolean;
+            hasPrevious?: boolean;
+            hasNext?: boolean;
+        };
+        BillSummaryResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int32 */
+            tableNumber?: number;
+            /** @enum {string} */
+            status?: "OPEN" | "CLOSED";
+            userId?: string;
+            totalAmount?: number;
+            /** Format: int32 */
+            itemCount?: number;
+            /** Format: date-time */
+            openedAt?: string;
+            /** Format: date-time */
+            closedAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        BillLineResponse: {
+            /** Format: uuid */
+            menuItemId?: string;
+            /** Format: int32 */
+            quantity?: number;
+            name?: string;
+            /** Format: int64 */
+            version?: number;
+        };
+        BillSummaryWithLinesResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int32 */
+            tableNumber?: number;
+            /** @enum {string} */
+            status?: "OPEN" | "CLOSED";
+            userId?: string;
+            totalAmount?: number;
+            billLines?: components["schemas"]["BillLineResponse"][];
+            /** Format: date-time */
+            openedAt?: string;
+            /** Format: date-time */
+            closedAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
         };
     };
     responses: never;
@@ -1692,39 +1694,6 @@ export interface operations {
             };
         };
     };
-    searchBills: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BillSearchRequest"];
-            };
-        };
-        responses: {
-            /** @description Bills retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["BillPageResponse"];
-                };
-            };
-            /** @description Invalid input data */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
     removeItems: {
         parameters: {
             query?: never;
@@ -2111,6 +2080,50 @@ export interface operations {
             };
         };
     };
+    searchBills: {
+        parameters: {
+            query?: {
+                statuses?: ("OPEN" | "CLOSED")[];
+                openedFrom?: string;
+                openedTo?: string;
+                closedFrom?: string;
+                closedTo?: string;
+                userId?: string;
+                tableNumbers?: number[];
+                minTotalAmount?: number;
+                maxTotalAmount?: number;
+                menuItemId?: string;
+                sortBy?: "OPENED_AT" | "CLOSED_AT" | "UPDATED_AT" | "TOTAL_AMOUNT" | "TABLE_NUMBER" | "USER_ID";
+                sortDirection?: "ASC" | "DESC";
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bills retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["BillPageResponse"];
+                };
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     searchBill: {
         parameters: {
             query?: never;
@@ -2128,7 +2141,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["BillSummaryResponse"];
+                    "*/*": components["schemas"]["BillSummaryWithLinesResponse"];
                 };
             };
             /** @description Bill not found */

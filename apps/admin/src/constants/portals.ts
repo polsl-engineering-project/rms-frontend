@@ -8,6 +8,7 @@ export type Portal = {
   icon: React.ElementType;
   path: string;
   color: string;
+  iconColor: string;
   roles: UserRole[];
 };
 
@@ -19,6 +20,7 @@ export const PORTALS: Portal[] = [
     icon: ChefHat,
     path: '/kitchen',
     color: 'from-orange-500 to-red-600',
+    iconColor: 'text-orange-600',
     roles: ['ADMIN', 'COOK', 'MANAGER'],
   },
   {
@@ -28,6 +30,7 @@ export const PORTALS: Portal[] = [
     icon: Utensils,
     path: '/waiter',
     color: 'from-blue-500 to-indigo-600',
+    iconColor: 'text-blue-600',
     roles: ['ADMIN', 'WAITER', 'MANAGER'],
   },
   {
@@ -37,6 +40,7 @@ export const PORTALS: Portal[] = [
     icon: Settings,
     path: '/admin',
     color: 'from-purple-500 to-pink-600',
+    iconColor: 'text-purple-600',
     roles: ['ADMIN', 'MANAGER'],
   },
 ];
