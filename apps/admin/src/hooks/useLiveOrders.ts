@@ -51,8 +51,7 @@ export function useLiveOrders() {
                   : null,
               deliveryMode:
                 message.type === OrderEventType.DELIVERY_ORDER_PLACED ? 'ASAP' : 'SCHEDULED',
-              // @ts-ignore: OpenAPI generated type for scheduledFor is Record<string, never> but backend sends string
-              scheduledFor: newOrderData.scheduledFor as string | null,
+              scheduledFor: newOrderData.scheduledFor,
               orderLines: newOrderData.lines || [],
               estimatedPreparationTimeMinutes: null,
             };

@@ -7,8 +7,18 @@ export type OrderLine = components['schemas']['OrderLine'] & {
 export type Address = components['schemas']['Address'];
 export type CustomerInfo = components['schemas']['CustomerInfo'];
 
-export type DeliveryOrderPlacedEvent = components['schemas']['DeliveryOrderPlacedEvent'];
-export type PickUpOrderPlacedEvent = components['schemas']['PickUpOrderPlacedEvent'];
+export type DeliveryOrderPlacedEvent = Omit<
+  components['schemas']['DeliveryOrderPlacedEvent'],
+  'scheduledFor'
+> & {
+  scheduledFor?: string | null;
+};
+export type PickUpOrderPlacedEvent = Omit<
+  components['schemas']['PickUpOrderPlacedEvent'],
+  'scheduledFor'
+> & {
+  scheduledFor?: string | null;
+};
 export type OrderApprovedByFrontDeskEvent = components['schemas']['OrderApprovedByFrontDeskEvent'];
 export type OrderApprovedByKitchenEvent = components['schemas']['OrderApprovedByKitchenEvent'];
 export type OrderCancelledEvent = components['schemas']['OrderCancelledEvent'];
