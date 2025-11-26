@@ -106,7 +106,7 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
             disabled={isLoading}
             placeholder="Enter item name"
           />
-        </div>{' '}
+        </div>
         <div className="grid gap-2">
           <FormikInput
             formik={formik}
@@ -115,7 +115,7 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
             disabled={isLoading}
             placeholder="Enter description (optional)"
           />
-        </div>{' '}
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
             <FormikInput
@@ -142,7 +142,7 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
               placeholder="Optional"
             />
           </div>
-        </div>{' '}
+        </div>
         <div className="grid gap-2">
           <Label htmlFor="categoryId">
             Category <span className="text-destructive">*</span>
@@ -180,7 +180,7 @@ export function MenuItemForm({ item, isLoading, onSubmit, onCancel, open }: Menu
             disabled={isLoading}
             placeholder="e.g., nuts, dairy, gluten"
           />
-        </div>{' '}
+        </div>
         <div className="grid gap-2">
           <Label htmlFor="spiceLevel">
             Spice Level <span className="text-destructive">*</span>

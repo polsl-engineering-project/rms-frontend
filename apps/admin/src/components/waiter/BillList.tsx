@@ -27,7 +27,7 @@ export function BillList() {
   const bills = data?.content || [];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 p-4">
       {/* New Bill Card */}
       <div
         onClick={() => navigate('/waiter/create')}

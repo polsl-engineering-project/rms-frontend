@@ -2,8 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ProtectedLayout } from '../layouts/ProtectedLayout';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
-import { KitchenViewPage } from '../pages/KitchenViewPage';
-import { LiveOrdersPage } from '../pages/LiveOrdersPage';
+import { KitchenDashboard } from '../pages/KitchenDashboard';
 import { WaiterDashboardPage } from '../pages/WaiterDashboardPage';
 import { WaiterMenuPage } from '../pages/WaiterMenuPage';
 import { AdminPageLayout } from '../layouts/AdminPageLayout';
@@ -34,13 +33,7 @@ export const router = createBrowserRouter([
       // Kitchen Staff - Single page with all controls
       {
         path: 'kitchen',
-        element: <KitchenViewPage />,
-      },
-
-      // Live Orders Management - Accept/Deny/Delay incoming orders
-      {
-        path: 'live-orders',
-        element: <LiveOrdersPage />,
+        element: <KitchenDashboard />,
       },
 
       // Waiter Interface

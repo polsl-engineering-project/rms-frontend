@@ -447,6 +447,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/orders/docs/ws/order-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * WebSocket OrderEvent Documentation
+         * @description Only for Event WebSocket schemas exposition
+         */
+        get: operations["docs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/bills": {
         parameters: {
             query?: never;
@@ -473,6 +493,26 @@ export interface paths {
         };
         /** Search bill by id */
         get: operations["searchBill"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/bills/docs/ws/bill-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * WebSocket BillEvent Documentation
+         * @description Only for Bill WebSocket schemas exposition
+         */
+        get: operations["docs_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -583,7 +623,7 @@ export interface components {
             customerInfo: components["schemas"]["CustomerInfo"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 10:44:08 */
+            /** @example 11:23:28 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -604,7 +644,7 @@ export interface components {
             address: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 10:44:08 */
+            /** @example 11:23:28 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLine"][];
         };
@@ -662,12 +702,13 @@ export interface components {
             newLines: components["schemas"]["BillLine"][];
         };
         BillLine: {
-            /** Format: uuid */
-            menuItemId: string;
+            menuItemId?: string;
             /** Format: int32 */
             quantity?: number;
+            unitPrice?: number;
+            menuItemName?: string;
             /** Format: int64 */
-            version?: number;
+            menuItemVersion?: number;
         };
         OpenBillRequest: {
             /** Format: int32 */
@@ -692,21 +733,21 @@ export interface components {
             password?: string;
         };
         PageUserResponse: {
-            /** Format: int64 */
-            totalElements?: number;
             /** Format: int32 */
             totalPages?: number;
+            /** Format: int64 */
+            totalElements?: number;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["UserResponse"][];
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
+            first?: boolean;
+            last?: boolean;
             empty?: boolean;
         };
         PageableObject: {
@@ -733,40 +774,184 @@ export interface components {
             estimatedPreparationMinutes?: number;
             cancellationReason?: string;
         };
+        /** @description DeliveryOrderPlacedEvent schema, type: DELIVERY_ORDER_PLACED */
+        DeliveryOrderPlacedEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            placedAt?: string;
+            lines?: components["schemas"]["OrderLine"][];
+            deliveryAddress?: components["schemas"]["Address"];
+            customerInfo?: components["schemas"]["CustomerInfo"];
+            /** @example 11:23:28 */
+            scheduledFor?: Record<string, never>;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description PickUpOrderPlacedEvent schema, type: PICK_UP_ORDER_PLACED */
+        PickUpOrderPlacedEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            placedAt?: string;
+            lines?: components["schemas"]["OrderLine"][];
+            deliveryAddress?: components["schemas"]["Address"];
+            customerInfo?: components["schemas"]["CustomerInfo"];
+            /** @example 11:23:28 */
+            scheduledFor?: Record<string, never>;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description OrderApprovedByFrontDeskEvent schema, type: APPROVED_BY_FRONT_DESK */
+        OrderApprovedByFrontDeskEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            approvedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description OrderApprovedByKitchenEvent schema, type: APPROVED_BY_KITCHEN */
+        OrderApprovedByKitchenEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            approvedAt?: string;
+            /** Format: int32 */
+            estimatedPreparationMinutes?: number;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description OrderCancelledEvent schema, type: CANCELLED */
+        OrderCancelledEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            cancelledAt?: string;
+            reason?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description OrderCompletedEvent schema, type: COMPLETED */
+        OrderCompletedEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            completedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description OrderDeliveryStartedEvent schema, type: DELIVERY_STARTED */
+        OrderDeliveryStartedEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            startedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        OrderLineRemoval: {
+            menuItemId?: string;
+            /** Format: int32 */
+            quantity?: number;
+        };
+        /** @description OrderLinesChangedEvent schema, type: LINES_CHANGED */
+        OrderLinesChangedEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            changedAt?: string;
+            addedLines?: components["schemas"]["OrderLine"][];
+            removedLines?: components["schemas"]["OrderLineRemoval"][];
+            /** Format: int32 */
+            updatedEstimatedPreparationMinutes?: number;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description OrderMarkedAsReadyEvent schema, type: MARKED_AS_READY */
+        OrderMarkedAsReadyEvent: {
+            /** Format: uuid */
+            orderId?: string;
+            /** Format: date-time */
+            readyAt?: string;
+            /** @enum {string} */
+            readyStatus?: "PENDING_APPROVAL" | "APPROVED_BY_FRONT_DESK" | "CONFIRMED" | "READY_FOR_PICKUP" | "READY_FOR_DRIVER" | "IN_DELIVERY" | "COMPLETED" | "CANCELLED";
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description OrderInitialDataEvent schema, type: INITIAL_DATA */
+        OrderInitialDataEvent: {
+            /** Format: uuid */
+            id?: string;
+            status?: string;
+            customerInfo?: components["schemas"]["CustomerInfo"];
+            address?: components["schemas"]["Address"];
+            /** @enum {string} */
+            deliveryMode?: "ASAP" | "SCHEDULED";
+            /** @example 11:23:28 */
+            scheduledFor?: Record<string, never>;
+            /** Format: date-time */
+            placedAt?: string;
+            orderLines?: components["schemas"]["OrderLine"][];
+            /** Format: int32 */
+            estimatedPreparationTimeMinutes?: number;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
         PageMenuItemResponse: {
-            /** Format: int64 */
-            totalElements?: number;
             /** Format: int32 */
             totalPages?: number;
+            /** Format: int64 */
+            totalElements?: number;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["MenuItemResponse"][];
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
+            first?: boolean;
+            last?: boolean;
             empty?: boolean;
         };
         PageMenuCategoryResponse: {
-            /** Format: int64 */
-            totalElements?: number;
             /** Format: int32 */
             totalPages?: number;
+            /** Format: int64 */
+            totalElements?: number;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["MenuCategoryResponse"][];
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
+            first?: boolean;
+            last?: boolean;
             empty?: boolean;
         };
         BillPageResponse: {
@@ -810,6 +995,7 @@ export interface components {
             name?: string;
             /** Format: int64 */
             version?: number;
+            unitPrice?: number;
         };
         BillSummaryWithLinesResponse: {
             /** Format: uuid */
@@ -827,6 +1013,85 @@ export interface components {
             closedAt?: string;
             /** Format: date-time */
             updatedAt?: string;
+        };
+        /** @description BillOpenEvent schema, type: OPENED */
+        BillOpenedEvent: {
+            /** Format: uuid */
+            billId?: string;
+            tableNumber?: components["schemas"]["TableNumber"];
+            initialLines?: components["schemas"]["BillLine"][];
+            /** Format: date-time */
+            openedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "OPENED" | "LINES_ADDED" | "LINES_REMOVED" | "CLOSED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        TableNumber: {
+            /** Format: int32 */
+            value: number;
+        };
+        /** @description BillAddLinesEvent schema, type: LINES_ADDED */
+        BillAddLinesEvent: {
+            /** Format: uuid */
+            billId?: string;
+            newLines?: components["schemas"]["BillLine"][];
+            /** Format: date-time */
+            updatedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "OPENED" | "LINES_ADDED" | "LINES_REMOVED" | "CLOSED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        BillLineRemoval: {
+            menuItemId?: string;
+            /** Format: int32 */
+            quantity?: number;
+        };
+        /** @description BillRemoveLinesEvent schema, type: LINES_REMOVED */
+        BillRemoveLinesEvent: {
+            /** Format: uuid */
+            billId?: string;
+            removedLines?: components["schemas"]["BillLineRemoval"][];
+            /** Format: date-time */
+            updatedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "OPENED" | "LINES_ADDED" | "LINES_REMOVED" | "CLOSED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description BillClosedEvent schema, type: CLOSED */
+        BillClosedEvent: {
+            /** Format: uuid */
+            billId?: string;
+            /** Format: date-time */
+            closedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "OPENED" | "LINES_ADDED" | "LINES_REMOVED" | "CLOSED";
+            /** Format: date-time */
+            occurredAt?: string;
+        };
+        /** @description BillInitialDataEvent schema, type: INITIAL_DATA */
+        BillInitialDataEvent: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int32 */
+            tableNumber?: number;
+            /** @enum {string} */
+            status?: "OPEN" | "CLOSED";
+            userId?: string;
+            totalAmount?: number;
+            billLines?: components["schemas"]["BillLineResponse"][];
+            /** Format: date-time */
+            openedAt?: string;
+            /** Format: date-time */
+            closedAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            /** @enum {string} */
+            type?: "INITIAL_DATA" | "OPENED" | "LINES_ADDED" | "LINES_REMOVED" | "CLOSED";
+            /** Format: date-time */
+            occurredAt?: string;
         };
     };
     responses: never;
@@ -2080,6 +2345,26 @@ export interface operations {
             };
         };
     };
+    docs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WebSocket OrderEvent schemas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": (string & (components["schemas"]["DeliveryOrderPlacedEvent"] | components["schemas"]["PickUpOrderPlacedEvent"] | components["schemas"]["OrderApprovedByFrontDeskEvent"] | components["schemas"]["OrderApprovedByKitchenEvent"] | components["schemas"]["OrderCancelledEvent"] | components["schemas"]["OrderCompletedEvent"] | components["schemas"]["OrderDeliveryStartedEvent"] | components["schemas"]["OrderLinesChangedEvent"] | components["schemas"]["OrderMarkedAsReadyEvent"] | components["schemas"]["OrderInitialDataEvent"]))[];
+                };
+            };
+        };
+    };
     searchBills: {
         parameters: {
             query?: {
@@ -2151,6 +2436,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    docs_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WebSocket BillEvent schemas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": (string & (components["schemas"]["BillOpenedEvent"] | components["schemas"]["BillAddLinesEvent"] | components["schemas"]["BillRemoveLinesEvent"] | components["schemas"]["BillClosedEvent"] | components["schemas"]["BillInitialDataEvent"]))[];
                 };
             };
         };
