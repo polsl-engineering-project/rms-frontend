@@ -38,7 +38,7 @@ export function BillCard({
             <Users className="h-3 w-3" /> {itemCount} items
           </div>
           <div className="text-xs text-slate-400 flex items-center gap-1">
-            <Clock className="h-3 w-3" />{' '}
+            <Clock className="h-3 w-3" />
             {formatDistanceToNow(new Date(openedAt), { addSuffix: true })}
           </div>
         </div>

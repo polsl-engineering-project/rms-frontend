@@ -114,6 +114,8 @@ export {
   SheetDescription,
 } from './components/ui/sheet';
 
+export { ScrollArea, ScrollBar } from './components/ui/scroll-area';
+
 // Data Table Components
 export { DataTable, TableToolbar } from './components/data-table';
 export type { Column, DataTableProps, Pagination, ColumnCellType } from './components/data-table';
@@ -146,6 +148,11 @@ export {
   Loader2,
   Receipt,
   X,
+  ShoppingBag,
+  ChefHat,
+  Edit,
+  MoreHorizontal,
+  Check,
 } from 'lucide-react';
 
 export { Toaster } from './components/ui/sonner';

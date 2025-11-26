@@ -85,7 +85,7 @@ export function BillDetailsPage() {
   return (
     <>
       <WaiterLayout showBack backPath="/waiter">
-        <div className="space-y-6">
+        <div className="space-y-6 p-4">
           <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border">
             <div>
               <p className="text-sm text-slate-500">Total Amount</p>
