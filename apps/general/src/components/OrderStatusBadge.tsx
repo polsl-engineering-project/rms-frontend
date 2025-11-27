@@ -1,4 +1,4 @@
-import { Badge, Package, Clock, CheckCircle, Truck, XCircle } from '@repo/ui';
+import { Badge, Package, Clock, CheckCircle, Truck, XCircle, ChefHat } from '@repo/ui';
 import { ORDER_STATUS_CONFIG } from '../constants/order';
 
 interface OrderStatusBadgeProps {
@@ -6,9 +6,11 @@ interface OrderStatusBadgeProps {
 }
 
 const STATUS_ICONS = {
-  PLACED: Package,
-  ACCEPTED: Clock,
-  READY: CheckCircle,
+  PENDING_APPROVAL: Clock,
+  APPROVED_BY_FRONT_DESK: CheckCircle,
+  CONFIRMED: ChefHat,
+  READY_FOR_PICKUP: Package,
+  READY_FOR_DRIVER: Package,
   IN_DELIVERY: Truck,
   COMPLETED: CheckCircle,
   CANCELLED: XCircle,

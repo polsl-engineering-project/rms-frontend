@@ -27,17 +27,20 @@ export function useOrderTracking(orderId: string | undefined) {
 
   useEffect(() => {
     if (data?.status) {
-      if (data.status === ORDER_STATUSES.PLACED) {
+      if (data.status === ORDER_STATUSES.PENDING_APPROVAL) {
         setPollingInterval(3000);
-      } else if (data.status === ORDER_STATUSES.ACCEPTED) {
-        setPollingInterval(30000);
+      } else if (
+        data.status === ORDER_STATUSES.APPROVED_BY_FRONT_DESK ||
+        data.status === ORDER_STATUSES.CONFIRMED
+      ) {
+        setPollingInterval(10000);
       } else if (
         data.status === ORDER_STATUSES.COMPLETED ||
         data.status === ORDER_STATUSES.CANCELLED
       ) {
         setPollingInterval(0);
       } else {
-        setPollingInterval(15000);
+        setPollingInterval(5000); // More frequent updates for Ready/In Delivery
       }
     }
   }, [data?.status]);

@@ -52,6 +52,7 @@ export function createApiClient(config: ApiClientConfig) {
   // Configure the fetch client with base URL
   const fetchOptions: ClientOptions = {
     baseUrl: config.baseUrl,
+    credentials: 'include',
   };
 
   // Create the type-safe fetch client using the generated OpenAPI types

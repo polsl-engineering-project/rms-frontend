@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useAuthStore } from '../stores/auth';
-import { useRefreshToken, useGetMe } from '../hooks/useAuth';
+import { useRefreshToken, useGetMe, useLogout } from '../hooks/useAuth';
+import { SessionExpiryDialog } from '../components/auth/SessionExpiryDialog';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -17,12 +18,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
   const isTokenExpiringSoon = useAuthStore((state) => state.isTokenExpiringSoon);
   const getTimeUntilWarning = useAuthStore((state) => state.getTimeUntilWarning);
+  const getTimeUntilExpiry = useAuthStore((state) => state.getTimeUntilExpiry);
   const isRefreshing = useAuthStore((state) => state.isRefreshing);
   const setUser = useAuthStore((state) => state.setUser);
 
   const refreshMutation = useRefreshToken();
+  const logoutMutation = useLogout();
   const { data: userData } = useGetMe();
   const [isLoading, setIsLoading] = useState(true);
+  const [isExpiryDialogOpen, setIsExpiryDialogOpen] = useState(false);
 
   // Update user in store when data is fetched
   useEffect(() => {
@@ -35,62 +39,84 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(false);
   }, []);
 
-  // Automatic token refresh
+  // Token expiry warning logic
   useEffect(() => {
-    if (!isAuthenticated || isRefreshing) return;
+    if (!isAuthenticated) {
+      setIsExpiryDialogOpen(false);
+      return;
+    }
 
-    const scheduleRefresh = () => {
+    const checkExpiry = () => {
       const timeUntilWarning = getTimeUntilWarning();
 
-      if (timeUntilWarning === null || timeUntilWarning === 0) {
-        // Token is already in warning zone or may be expired
-        // Check if token is expired first, if so, don't attempt refresh
+      // If timeUntilWarning is null, token might be missing or invalid
+      if (timeUntilWarning === null) return;
+
+      if (timeUntilWarning <= 0) {
+        // We are past the warning threshold
         const isExpired = useAuthStore.getState().isTokenExpired();
+
         if (isExpired) {
-          console.warn('Token has expired, not attempting refresh');
+          // Token expired, close dialog if open (user will be redirected by protected route)
+          setIsExpiryDialogOpen(false);
           return;
         }
 
-        // Token is in warning zone but not expired, refresh immediately
-        if (isTokenExpiringSoon()) {
-          refreshMutation.mutateAsync().catch((error: Error) => {
-            console.error('Auto-refresh failed:', error);
-          });
+        // Token is in warning zone but not expired, show dialog
+        if (isTokenExpiringSoon() && !isExpiryDialogOpen) {
+          setIsExpiryDialogOpen(true);
         }
         return;
       }
 
-      // Schedule refresh at warning threshold (3 min before expiry)
+      // Schedule check at warning threshold
       const timeoutId = setTimeout(() => {
-        refreshMutation
-          .mutateAsync()
-          .then(() => {
-            // Reschedule for the new token
-            scheduleRefresh();
-          })
-          .catch((error: Error) => {
-            console.error('Auto-refresh failed:', error);
-          });
+        setIsExpiryDialogOpen(true);
       }, timeUntilWarning);
 
       return timeoutId;
     };
 
-    const timeoutId = scheduleRefresh();
+    const timeoutId = checkExpiry();
 
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
     };
-  }, [isAuthenticated, isRefreshing, getTimeUntilWarning, isTokenExpiringSoon, refreshMutation]);
+  }, [isAuthenticated, getTimeUntilWarning, isTokenExpiringSoon, isExpiryDialogOpen]);
+
+  const handleRefresh = async () => {
+    try {
+      await refreshMutation.mutateAsync();
+      setIsExpiryDialogOpen(false);
+    } catch (error) {
+      console.error('Manual refresh failed:', error);
+    }
+  };
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+    setIsExpiryDialogOpen(false);
+  };
 
   const value: AuthContextValue = {
     isAuthenticated,
     isLoading,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      <SessionExpiryDialog
+        isOpen={isExpiryDialogOpen}
+        timeUntilExpiry={getTimeUntilExpiry() || 0}
+        onRefresh={handleRefresh}
+        onLogout={handleLogout}
+        isRefreshing={isRefreshing}
+      />
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

@@ -29,30 +29,62 @@ export function ApproveOrderDialog({
     onConfirm(estimatedMinutes);
   };
 
+  const PRESET_TIMES = [15, 30, 45, 60, 75, 90];
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Approve Order</DialogTitle>
+          <DialogTitle>Start Cooking Order</DialogTitle>
         </DialogHeader>
-        <div className="py-4">
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="estimatedTime">Estimated Preparation Time (minutes)</Label>
+        <div className="py-6 space-y-6">
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-gray-700">Quick Select Time</Label>
+            <div className="grid grid-cols-3 gap-3">
+              {PRESET_TIMES.map((time) => (
+                <Button
+                  key={time}
+                  variant={estimatedMinutes === time ? 'default' : 'outline'}
+                  onClick={() => setEstimatedMinutes(time)}
+                  className={`h-12 ${
+                    estimatedMinutes === time ? 'bg-amber-600 hover:bg-amber-700' : ''
+                  }`}
+                >
+                  {time} min
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="estimatedTime" className="text-sm font-medium text-gray-700">
+              Manual Entry (minutes)
+            </Label>
             <Input
               type="number"
               id="estimatedTime"
               value={estimatedMinutes}
               onChange={(e) => setEstimatedMinutes(parseInt(e.target.value) || 0)}
               min={1}
+              className="h-12 text-lg"
             />
           </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+        <DialogFooter className="sm:justify-between gap-4">
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            disabled={isLoading}
+            className="w-full sm:w-auto"
+          >
             Cancel
           </Button>
-          <Button onClick={handleConfirm} disabled={isLoading}>
-            {isLoading ? 'Confirming...' : 'Confirm'}
+          <Button
+            onClick={handleConfirm}
+            disabled={isLoading}
+            className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700"
+          >
+            {isLoading ? 'Confirming...' : 'Start Cooking'}
           </Button>
         </DialogFooter>
       </DialogContent>

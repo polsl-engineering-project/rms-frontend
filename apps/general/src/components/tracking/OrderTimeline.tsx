@@ -1,4 +1,15 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Check,
+  Clock,
+  Truck,
+  CheckCircle,
+  ChefHat,
+  Package,
+} from '@repo/ui';
 import { ORDER_STATUSES } from '../../constants/order';
 import type { components } from '@repo/api-client';
 
@@ -9,25 +20,64 @@ interface OrderTimelineProps {
 }
 
 export function OrderTimeline({ status }: OrderTimelineProps) {
-  const stages = [
-    { status: ORDER_STATUSES.PLACED, label: 'Order Placed' },
-    { status: ORDER_STATUSES.ACCEPTED, label: 'Order Accepted' },
-    { status: ORDER_STATUSES.READY, label: 'Order Ready' },
-    status === ORDER_STATUSES.IN_DELIVERY
-      ? { status: ORDER_STATUSES.IN_DELIVERY, label: 'Out for Delivery' }
-      : null,
-    { status: ORDER_STATUSES.COMPLETED, label: 'Order Completed' },
-  ].filter(Boolean);
+  const getProgressLevel = (s: string | undefined) => {
+    switch (s) {
+      case ORDER_STATUSES.PENDING_APPROVAL:
+        return 0;
+      case ORDER_STATUSES.APPROVED_BY_FRONT_DESK:
+        return 1;
+      case ORDER_STATUSES.CONFIRMED:
+        return 2;
+      case ORDER_STATUSES.READY_FOR_PICKUP:
+      case ORDER_STATUSES.READY_FOR_DRIVER:
+        return 3;
+      case ORDER_STATUSES.IN_DELIVERY:
+        return 4;
+      case ORDER_STATUSES.COMPLETED:
+        return 5;
+      default:
+        return -1;
+    }
+  };
 
-  const statusOrder = [
-    ORDER_STATUSES.PLACED,
-    ORDER_STATUSES.ACCEPTED,
-    ORDER_STATUSES.READY,
-    ORDER_STATUSES.IN_DELIVERY,
-    ORDER_STATUSES.COMPLETED,
+  const currentLevel = getProgressLevel(status);
+
+  const showDeliveryStep =
+    status === ORDER_STATUSES.IN_DELIVERY || status === ORDER_STATUSES.READY_FOR_DRIVER;
+
+  const stages = [
+    { id: 'placed', label: 'Order Placed', level: 0, Icon: Clock },
+    { id: 'accepted', label: 'Front Desk Approved', level: 1, Icon: Check },
+    { id: 'preparing', label: 'Preparing', level: 2, Icon: ChefHat },
+    { id: 'ready', label: 'Order Ready', level: 3, Icon: Package },
   ];
 
-  const currentIndex = statusOrder.indexOf(status as (typeof statusOrder)[number]);
+  if (showDeliveryStep) {
+    stages.push({ id: 'delivery', label: 'Out for Delivery', level: 4, Icon: Truck });
+  }
+
+  stages.push({ id: 'completed', label: 'Completed', level: 5, Icon: CheckCircle });
+
+  const getStageDescription = (stageId: string) => {
+    switch (stageId) {
+      case 'placed':
+        return 'Waiting for confirmation...';
+      case 'accepted':
+        return 'Order sent to kitchen...';
+      case 'preparing':
+        return 'Chefs are cooking your meal...';
+      case 'ready':
+        return status === ORDER_STATUSES.READY_FOR_DRIVER
+          ? 'Waiting for driver assignment...'
+          : 'Ready for pickup at the counter!';
+      case 'delivery':
+        return 'Driver is on the way to you...';
+      case 'completed':
+        return 'Enjoy your meal!';
+      default:
+        return '';
+    }
+  };
 
   return (
     <Card className="border-amber-100 bg-white/90 backdrop-blur-sm">
@@ -35,37 +85,59 @@ export function OrderTimeline({ status }: OrderTimelineProps) {
         <CardTitle>Order Progress</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {stages.map((stage) => {
-            if (!stage) return null;
-
-            const stageIndex = statusOrder.indexOf(stage.status as (typeof statusOrder)[number]);
-            const isActive = stageIndex <= currentIndex;
-            const isCurrent = stage.status === status;
+        <div className="relative space-y-0">
+          {stages.map((stage, index) => {
+            const isCompleted = currentLevel > stage.level;
+            const isCurrent = currentLevel === stage.level;
+            const isActive = isCompleted || isCurrent;
+            const isLast = index === stages.length - 1;
+            const description = getStageDescription(stage.id);
+            const shouldPulse = isCurrent && stage.id !== 'completed' && stage.id !== 'ready';
 
             return (
-              <div key={stage.status} className="flex items-center gap-4">
+              <div key={stage.id} className="relative flex gap-4 pb-8 last:pb-0">
+                {/* Connecting Line */}
+                {!isLast && (
+                  <div
+                    className={`absolute left-4 top-8 bottom-0 w-0.5 -ml-px ${
+                      isCompleted ? 'bg-amber-600' : 'bg-gray-200'
+                    }`}
+                  />
+                )}
+
+                {/* Icon Circle */}
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${
+                  className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 ${
                     isActive
                       ? 'bg-amber-600 border-amber-600 text-white'
                       : 'bg-white border-gray-300 text-gray-400'
                   }`}
                 >
-                  {isActive && '✓'}
+                  <stage.Icon className="w-4 h-4" />
                 </div>
-                <div className="flex-1">
+
+                {/* Text */}
+                <div className="flex-1 pt-1">
                   <p
-                    className={`font-medium ${
+                    className={`font-medium transition-colors duration-300 ${
                       isCurrent
-                        ? 'text-amber-700'
+                        ? 'text-amber-700 font-bold'
                         : isActive
-                        ? 'text-gray-900'
-                        : 'text-gray-400'
+                          ? 'text-gray-900'
+                          : 'text-gray-400'
                     }`}
                   >
                     {stage.label}
                   </p>
+                  {isCurrent && description && (
+                    <p
+                      className={`text-sm text-amber-600 mt-1 ${
+                        shouldPulse ? 'animate-pulse' : ''
+                      }`}
+                    >
+                      {description}
+                    </p>
+                  )}
                 </div>
               </div>
             );
