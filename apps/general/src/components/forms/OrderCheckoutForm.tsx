@@ -15,6 +15,7 @@ import type { CheckoutFormValues } from './CustomerInfoFormFields';
 interface OrderCheckoutFormProps {
   orderType: OrderType;
   deliveryMode: DeliveryMode;
+  scheduledTime?: string;
 }
 
 export interface OrderCheckoutFormHandle {
@@ -25,7 +26,7 @@ export interface OrderCheckoutFormHandle {
 }
 
 export const OrderCheckoutForm = forwardRef<OrderCheckoutFormHandle, OrderCheckoutFormProps>(
-  ({ orderType, deliveryMode }, ref) => {
+  ({ orderType, deliveryMode, scheduledTime }, ref) => {
     const navigate = useNavigate();
     const getCartForOrder = useCartStore((state) => state.getCartForOrder);
     const clearCart = useCartStore((state) => state.clearCart);
@@ -40,13 +41,17 @@ export const OrderCheckoutForm = forwardRef<OrderCheckoutFormHandle, OrderChecko
           phoneNumber: values.phoneNumber,
         };
 
+        const commonBody = {
+          customerInfo,
+          deliveryMode,
+          orderLines,
+          scheduledFor: deliveryMode === 'SCHEDULED' ? scheduledTime : undefined,
+        };
+
         if (orderType === ORDER_TYPES.PICKUP) {
           const response = await fetchClient.POST('/api/v1/orders/place-pick-up-order', {
-            body: {
-              customerInfo,
-              deliveryMode,
-              orderLines,
-            },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            body: commonBody as any,
           });
 
           if (response.error) {
@@ -66,9 +71,8 @@ export const OrderCheckoutForm = forwardRef<OrderCheckoutFormHandle, OrderChecko
 
           const response = await fetchClient.POST('/api/v1/orders/place-delivery-order', {
             body: {
-              customerInfo,
-              deliveryMode,
-              orderLines,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ...(commonBody as any),
               address,
             },
           });

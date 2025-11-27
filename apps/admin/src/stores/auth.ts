@@ -5,8 +5,8 @@ import type { CurrentUser } from '../types/auth';
 // Token TTL: 60 minutes (in milliseconds)
 const TOKEN_TTL_MS = 60 * 60 * 1000;
 
-// Warning threshold: triggers when 15 minutes remain until expiration (in milliseconds)
-const TOKEN_EXPIRY_WARNING_MS = 15 * 60 * 1000;
+// Warning threshold: triggers when 10 minutes remain until expiration (in milliseconds)
+const TOKEN_EXPIRY_WARNING_MS = 10 * 60 * 1000;
 
 interface AuthState {
   token: string | null;

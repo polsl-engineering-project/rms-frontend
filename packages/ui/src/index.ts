@@ -157,3 +157,5 @@ export {
 
 export { Toaster } from './components/ui/sonner';
 export { toast } from 'sonner';
+
+export { TimePicker } from './components/ui/time-picker';

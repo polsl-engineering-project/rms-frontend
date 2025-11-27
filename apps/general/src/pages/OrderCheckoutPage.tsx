@@ -61,7 +61,12 @@ export function OrderCheckoutPage() {
               onScheduledTimeChange={setScheduledTime}
             />
 
-            <OrderCheckoutForm ref={formRef} orderType={orderType} deliveryMode={deliveryMode} />
+            <OrderCheckoutForm
+              ref={formRef}
+              orderType={orderType}
+              deliveryMode={deliveryMode}
+              scheduledTime={scheduledTime}
+            />
           </div>
 
           {/* Order Summary Sidebar */}

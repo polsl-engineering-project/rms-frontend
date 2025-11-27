@@ -27,12 +27,12 @@ export default defineConfig({
       // Explicitly watch the UI package inside node_modules for changes
       ignored: ['!**/node_modules/@repo/ui/**'],
     },
-    //   proxy: {  Workaround for for when the CORS issues appear again in development
-    //     '/api': {
-    //       target: 'http://localhost:8080',
-    //       changeOrigin: true,
-    //       secure: false,
-    //     },
-    //   },
+    proxy: {
+      '/api': {
+        target: 'https://rms-backend-1045457934254.europe-central2.run.app',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });

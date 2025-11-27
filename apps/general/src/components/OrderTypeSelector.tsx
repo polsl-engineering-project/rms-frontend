@@ -9,8 +9,7 @@ import {
   Label,
   RadioGroup,
   RadioGroupItem,
-  Input,
-  Calendar,
+  TimePicker,
 } from '@repo/ui';
 import { ORDER_TYPES, DELIVERY_MODES } from '../constants/order';
 import type { OrderType, DeliveryMode } from '../constants/order';
@@ -60,13 +59,21 @@ export function OrderTypeSelector({
             onValueChange={(value) => onDeliveryModeChange(value as DeliveryMode)}
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value={DELIVERY_MODES.ASAP} id="asap" />
+              <RadioGroupItem
+                value={DELIVERY_MODES.ASAP}
+                id="asap"
+                className="text-amber-600 border-amber-600 focus-visible:ring-amber-600 data-[state=checked]:bg-amber-600 data-[state=checked]:text-white"
+              />
               <Label htmlFor="asap" className="cursor-pointer">
                 As soon as possible
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value={DELIVERY_MODES.SCHEDULED} id="scheduled" />
+              <RadioGroupItem
+                value={DELIVERY_MODES.SCHEDULED}
+                id="scheduled"
+                className="text-amber-600 border-amber-600 focus-visible:ring-amber-600 data-[state=checked]:bg-amber-600 data-[state=checked]:text-white"
+              />
               <Label htmlFor="scheduled" className="cursor-pointer">
                 Schedule for later
               </Label>
@@ -76,16 +83,7 @@ export function OrderTypeSelector({
           {deliveryMode === DELIVERY_MODES.SCHEDULED && (
             <div className="mt-4">
               <Label htmlFor="scheduledTime">Scheduled Time</Label>
-              <div className="relative">
-                <Input
-                  id="scheduledTime"
-                  type="datetime-local"
-                  value={scheduledTime}
-                  onChange={(e) => onScheduledTimeChange(e.target.value)}
-                  className="pl-10"
-                />
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              </div>
+              <TimePicker value={scheduledTime} onChange={onScheduledTimeChange} />
             </div>
           )}
         </CardContent>

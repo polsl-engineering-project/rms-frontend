@@ -8,14 +8,11 @@ import {
   DeliveryOrderPlacedEvent,
 } from '../types/orders-ws';
 
-// TODO: Replace with actual WebSocket URL from environment or config
-const WS_URL = 'ws://rms-backend-1045457934254.europe-central2.run.app/ws/orders';
+const WS_URL = import.meta.env.VITE_WS_URL + '/orders';
 
 export function useLiveOrders() {
   const [orders, setOrders] = useState<OrderDetailsResponse[]>([]);
   const token = useAuthStore((state) => state.token);
-  // Note: Browser WebSocket API does not support custom headers (like Authorization).
-  // We pass the token via query parameter as the standard workaround.
   const socketUrl = token ? `${WS_URL}?token=${token}` : null;
 
   const { lastMessage, readyState } = useWebSocket(socketUrl, {

@@ -15,16 +15,20 @@ import {
   X,
   ChefHat,
   Truck,
+  Eye,
+  DropdownMenuSeparator,
 } from '@repo/ui';
 import { OrderDetailsResponse } from '../../../types/orders-ws';
 import { fetchClient } from '../../../api/client';
 import { useState } from 'react';
+import { OrderDetailsDialog } from './OrderDetailsDialog';
 
 interface LiveOrderCardProps {
   order: OrderDetailsResponse;
 }
 export function LiveOrderCard({ order }: LiveOrderCardProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const handleAction = async (
     action: 'approve' | 'approve-kitchen' | 'cancel' | 'ready' | 'complete' | 'start-delivery'
@@ -124,6 +128,12 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
 
     return (
       <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem onClick={() => setIsDetailsOpen(true)}>
+          <Eye className="w-4 h-4 mr-2" /> View Details
+        </DropdownMenuItem>
+
+        {hasActions && <DropdownMenuSeparator />}
+
         {isPlaced && (
           <>
             <DropdownMenuItem onClick={() => handleAction('approve')}>
@@ -165,7 +175,6 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
             <Check className="w-4 h-4 mr-2 text-green-600" /> Complete Order
           </DropdownMenuItem>
         )}
-        {!hasActions && <DropdownMenuItem disabled>No actions available</DropdownMenuItem>}
       </DropdownMenuContent>
     );
   };
@@ -230,6 +239,12 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
         </DropdownMenuTrigger>
         {renderMenuContent()}
       </DropdownMenu>
+
+      <OrderDetailsDialog
+        isOpen={isDetailsOpen}
+        onClose={() => setIsDetailsOpen(false)}
+        order={order}
+      />
     </>
   );
 }

@@ -13,9 +13,11 @@ export const DELIVERY_MODES = {
 export type DeliveryMode = ValueOf<typeof DELIVERY_MODES>;
 
 export const ORDER_STATUSES = {
-  PLACED: 'PLACED',
-  ACCEPTED: 'ACCEPTED',
-  READY: 'READY',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED_BY_FRONT_DESK: 'APPROVED_BY_FRONT_DESK',
+  CONFIRMED: 'CONFIRMED',
+  READY_FOR_PICKUP: 'READY_FOR_PICKUP',
+  READY_FOR_DRIVER: 'READY_FOR_DRIVER',
   IN_DELIVERY: 'IN_DELIVERY',
   COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
@@ -27,20 +29,30 @@ export const ORDER_STATUS_CONFIG: Record<
   string,
   { label: string; color: string; bgColor: string }
 > = {
-  PLACED: {
+  PENDING_APPROVAL: {
     label: 'Order Placed',
     color: 'text-amber-700 hover:text-amber-700',
     bgColor: 'bg-amber-100 hover:bg-amber-100',
   },
-  ACCEPTED: {
-    label: 'Accepted',
+  APPROVED_BY_FRONT_DESK: {
+    label: 'Front Desk Approved',
+    color: 'text-blue-700 hover:text-blue-700',
+    bgColor: 'bg-blue-100 hover:bg-blue-100',
+  },
+  CONFIRMED: {
+    label: 'Preparing',
+    color: 'text-orange-700 hover:text-orange-700',
+    bgColor: 'bg-orange-100 hover:bg-orange-100',
+  },
+  READY_FOR_PICKUP: {
+    label: 'Ready for Pickup',
     color: 'text-green-700 hover:text-green-700',
     bgColor: 'bg-green-100 hover:bg-green-100',
   },
-  READY: {
-    label: 'Ready',
-    color: 'text-blue-700 hover:text-blue-700',
-    bgColor: 'bg-blue-100 hover:bg-blue-100',
+  READY_FOR_DRIVER: {
+    label: 'Waiting for Driver',
+    color: 'text-green-700 hover:text-green-700',
+    bgColor: 'bg-green-100 hover:bg-green-100',
   },
   IN_DELIVERY: {
     label: 'Out for Delivery',

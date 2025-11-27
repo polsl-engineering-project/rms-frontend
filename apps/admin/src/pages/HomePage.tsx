@@ -57,18 +57,6 @@ export function HomePage() {
           </RoleGuard>
         ))}
       </div>
-
-      {/* Quick Links */}
-      <div className="mt-12 text-center">
-        <div className="inline-flex gap-6 text-sm text-gray-600">
-          <button
-            onClick={() => navigate('/live-orders')}
-            className="hover:text-gray-900 transition-colors"
-          >
-            Live Orders
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
