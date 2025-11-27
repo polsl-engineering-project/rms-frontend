@@ -3,8 +3,7 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { useAuthStore } from '../stores/auth';
 import { BillEventType, BillWebsocketMessage, BillInitialDataEvent } from '../types/bills-ws';
 
-// TODO: Replace with actual WebSocket URL from environment or config
-const WS_URL = 'ws://rms-backend-1045457934254.europe-central2.run.app/ws/bills';
+const WS_URL = import.meta.env.VITE_WS_URL + '/bills';
 
 export function useLiveBills() {
   const [bills, setBills] = useState<BillInitialDataEvent[]>([]);
