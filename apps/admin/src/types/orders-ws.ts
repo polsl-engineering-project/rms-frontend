@@ -1,9 +1,6 @@
 import { components } from '@repo/api-client';
 
-export type OrderLine = components['schemas']['OrderLine'] & {
-  id?: string;
-  name?: string;
-};
+export type OrderLine = components['schemas']['OrderLine'];
 export type Address = components['schemas']['Address'];
 export type CustomerInfo = components['schemas']['CustomerInfo'];
 
@@ -19,8 +16,7 @@ export type PickUpOrderPlacedEvent = Omit<
 > & {
   scheduledFor?: string | null;
 };
-export type OrderApprovedByFrontDeskEvent = components['schemas']['OrderApprovedByFrontDeskEvent'];
-export type OrderApprovedByKitchenEvent = components['schemas']['OrderApprovedByKitchenEvent'];
+export type OrderApprovedEvent = components['schemas']['OrderApprovedEvent'];
 export type OrderCancelledEvent = components['schemas']['OrderCancelledEvent'];
 export type OrderCompletedEvent = components['schemas']['OrderCompletedEvent'];
 export type OrderDeliveryStartedEvent = components['schemas']['OrderDeliveryStartedEvent'];
@@ -33,8 +29,7 @@ export const OrderEventType = {
   INITIAL_DATA: 'INITIAL_DATA',
   DELIVERY_ORDER_PLACED: 'DELIVERY_ORDER_PLACED',
   PICK_UP_ORDER_PLACED: 'PICK_UP_ORDER_PLACED',
-  APPROVED_BY_FRONT_DESK: 'APPROVED_BY_FRONT_DESK',
-  APPROVED_BY_KITCHEN: 'APPROVED_BY_KITCHEN',
+  APPROVED: 'APPROVED',
   CANCELLED: 'CANCELLED',
   COMPLETED: 'COMPLETED',
   DELIVERY_STARTED: 'DELIVERY_STARTED',
@@ -49,6 +44,7 @@ export interface OrderDetailsResponse {
   address?: Address | null;
   deliveryMode: 'ASAP' | 'SCHEDULED';
   scheduledFor?: string | null;
+  placedAt?: string;
   orderLines: OrderLine[];
   estimatedPreparationTimeMinutes?: number | null;
 }
@@ -57,8 +53,7 @@ export type OrderWebsocketMessage =
   | { type: typeof OrderEventType.INITIAL_DATA; data: OrderDetailsResponse[] }
   | { type: typeof OrderEventType.DELIVERY_ORDER_PLACED; data: DeliveryOrderPlacedEvent }
   | { type: typeof OrderEventType.PICK_UP_ORDER_PLACED; data: PickUpOrderPlacedEvent }
-  | { type: typeof OrderEventType.APPROVED_BY_FRONT_DESK; data: OrderApprovedByFrontDeskEvent }
-  | { type: typeof OrderEventType.APPROVED_BY_KITCHEN; data: OrderApprovedByKitchenEvent }
+  | { type: typeof OrderEventType.APPROVED; data: OrderApprovedEvent }
   | { type: typeof OrderEventType.CANCELLED; data: OrderCancelledEvent }
   | { type: typeof OrderEventType.COMPLETED; data: OrderCompletedEvent }
   | { type: typeof OrderEventType.DELIVERY_STARTED; data: OrderDeliveryStartedEvent }

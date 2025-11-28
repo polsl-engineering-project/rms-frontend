@@ -22,6 +22,7 @@ export function AdminPageLayout() {
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="items">Items</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
+            <TabsTrigger value="bills">Bills</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

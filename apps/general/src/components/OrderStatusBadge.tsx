@@ -8,6 +8,7 @@ interface OrderStatusBadgeProps {
 const STATUS_ICONS = {
   PENDING_APPROVAL: Clock,
   APPROVED_BY_FRONT_DESK: CheckCircle,
+  APPROVED: ChefHat,
   CONFIRMED: ChefHat,
   READY_FOR_PICKUP: Package,
   READY_FOR_DRIVER: Package,

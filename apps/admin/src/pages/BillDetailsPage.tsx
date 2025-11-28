@@ -106,8 +106,8 @@ export function BillDetailsPage() {
                 </div>
               ) : (
                 <ul className="divide-y">
-                  {items.map((item, index) => (
-                    <li key={index} className="p-4 flex justify-between items-center">
+                  {items.map((item) => (
+                    <li key={item.menuItemId} className="p-4 flex justify-between items-center">
                       <div>
                         <p className="font-medium">{item.name || 'Unknown Item'}</p>
                         <p className="text-sm text-slate-500">Qty: {item.quantity}</p>

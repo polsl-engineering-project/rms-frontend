@@ -7,7 +7,9 @@ export function KitchenOrdersBoard() {
   const { orders, readyState } = useLiveOrders();
 
   const kitchenOrders = orders.filter((order) =>
-    ['APPROVED_BY_FRONT_DESK', 'APPROVED_BY_KITCHEN', 'CONFIRMED'].includes(order.status)
+    ['APPROVED_BY_FRONT_DESK', 'APPROVED_BY_KITCHEN', 'CONFIRMED', 'APPROVED'].includes(
+      order.status
+    )
   );
 
   if (readyState === ReadyState.CONNECTING) {

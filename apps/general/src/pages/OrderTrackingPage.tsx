@@ -1,11 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  CardContent,
-  ArrowLeft,
-  AlertCircle,
-} from '@repo/ui';
+import { Button, Card, CardContent, ArrowLeft, AlertCircle } from '@repo/ui';
 import { ORDER_STATUSES } from '../constants/order';
 import { useOrderTracking } from '../hooks/useOrderTracking';
 import { OrderStatusCard } from '../components/tracking/OrderStatusCard';
@@ -16,7 +10,7 @@ import { OrderCancellationReason } from '../components/tracking/OrderCancellatio
 export function OrderTrackingPage() {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  
+
   const { data, isLoading, error } = useOrderTracking(orderId);
 
   if (isLoading && !data) {
@@ -69,7 +63,7 @@ export function OrderTrackingPage() {
           Back to Home
         </Button>
 
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-2 pb-1 bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
           Order Tracking
         </h1>
         <p className="text-gray-600 mb-8">Order ID: {orderId!}</p>
@@ -77,11 +71,14 @@ export function OrderTrackingPage() {
         <div className="space-y-6">
           <OrderStatusCard status={data.status} />
 
-          <OrderEstimatedTime minutes={data.estimatedPreparationMinutes} />
+          <OrderEstimatedTime
+            approvedAt={data.approvedAt}
+            minutes={data.estimatedPreparationMinutes}
+          />
 
           <OrderCancellationReason status={data.status} reason={data.cancellationReason} />
 
-          <OrderTimeline status={data.status} />
+          <OrderTimeline order={data} />
 
           {/* Action Buttons */}
           {isCompleted && (

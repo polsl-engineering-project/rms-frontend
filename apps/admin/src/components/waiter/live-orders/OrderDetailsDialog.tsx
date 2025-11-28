@@ -99,11 +99,11 @@ export function OrderDetailsDialog({ isOpen, onClose, order }: OrderDetailsDialo
                 {order.orderLines.map((line, index) => (
                   <div key={index} className="p-3 flex items-start justify-between">
                     <div className="flex items-start gap-3">
-                      <div className="bg-amber-50 text-amber-700 w-6 h-6 rounded flex items-center justify-center text-xs font-bold mt-0.5">
+                      <div className="bg-indigo-100 text-indigo-700 w-6 h-6 rounded flex items-center justify-center text-xs font-bold mt-0.5">
                         {line.quantity}x
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900">{line.name || 'Item'}</p>
+                        <p className="font-medium text-slate-900">{line.menuItemName || 'Item'}</p>
                         {/* If we had options/modifiers, they would go here */}
                       </div>
                     </div>

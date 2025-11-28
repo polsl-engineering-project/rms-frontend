@@ -4,12 +4,10 @@ import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
 import { KitchenDashboard } from '../pages/KitchenDashboard';
 import { WaiterDashboardPage } from '../pages/WaiterDashboardPage';
-import { WaiterMenuPage } from '../pages/WaiterMenuPage';
 import { AdminPageLayout } from '../layouts/AdminPageLayout';
 import { UserManagementPage } from '../pages/UserManagementPage';
 import { MenuCategoriesPage } from '../pages/MenuCategoriesPage';
 import { MenuItemsPage } from '../pages/MenuItemsPage';
-import { OrderHistoryPage } from '../pages/OrderHistoryPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { RoleGuard } from '../components/RoleGuard';
 import { BillDetailsPage } from '../pages/BillDetailsPage';
@@ -40,10 +38,6 @@ export const router = createBrowserRouter([
       {
         path: 'waiter',
         element: <WaiterDashboardPage />,
-      },
-      {
-        path: 'waiter/menu',
-        element: <WaiterMenuPage />,
       },
       {
         path: 'waiter/create',
@@ -85,7 +79,11 @@ export const router = createBrowserRouter([
           },
           {
             path: 'orders',
-            element: <OrderHistoryPage />,
+            element: <></>,
+          },
+          {
+            path: 'bills',
+            element: <></>,
           },
         ],
       },

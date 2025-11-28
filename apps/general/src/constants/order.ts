@@ -14,6 +14,7 @@ export type DeliveryMode = ValueOf<typeof DELIVERY_MODES>;
 
 export const ORDER_STATUSES = {
   PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
   APPROVED_BY_FRONT_DESK: 'APPROVED_BY_FRONT_DESK',
   CONFIRMED: 'CONFIRMED',
   READY_FOR_PICKUP: 'READY_FOR_PICKUP',
@@ -33,6 +34,11 @@ export const ORDER_STATUS_CONFIG: Record<
     label: 'Order Placed',
     color: 'text-amber-700 hover:text-amber-700',
     bgColor: 'bg-amber-100 hover:bg-amber-100',
+  },
+  APPROVED: {
+    label: 'Preparing',
+    color: 'text-orange-700 hover:text-orange-700',
+    bgColor: 'bg-orange-100 hover:bg-orange-100',
   },
   APPROVED_BY_FRONT_DESK: {
     label: 'Front Desk Approved',

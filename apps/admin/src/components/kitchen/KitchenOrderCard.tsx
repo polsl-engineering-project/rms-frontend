@@ -1,18 +1,7 @@
-import {
-  Card,
-  CardContent,
-  Badge,
-  toast,
-  Clock,
-  ShoppingBag,
-  ChefHat,
-  Check,
-  Button,
-} from '@repo/ui';
+import { Card, CardContent, Badge, toast, Clock, ShoppingBag, Check, Button } from '@repo/ui';
 import { OrderDetailsResponse } from '../../types/orders-ws';
 import { fetchClient } from '../../api/client';
 import { useState } from 'react';
-import { ApproveOrderDialog } from './ApproveOrderDialog';
 
 interface KitchenOrderCardProps {
   order: OrderDetailsResponse;
@@ -20,29 +9,6 @@ interface KitchenOrderCardProps {
 
 export function KitchenOrderCard({ order }: KitchenOrderCardProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isApproveDialogOpen, setIsApproveDialogOpen] = useState(false);
-
-  const handleApprove = async (estimatedMinutes: number) => {
-    setIsLoading(true);
-    try {
-      const response = await fetchClient.POST('/api/v1/orders/{id}/approve/kitchen', {
-        params: { path: { id: order.id } },
-        body: { estimatedPreparationMinutes: estimatedMinutes },
-      });
-
-      if (response?.error) {
-        toast.error('Failed to approve order');
-      } else {
-        toast.success('Order approved successfully');
-        setIsApproveDialogOpen(false);
-      }
-    } catch (error) {
-      console.error('Action failed', error);
-      toast.error('An error occurred');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleReady = async () => {
     setIsLoading(true);
@@ -70,6 +36,7 @@ export function KitchenOrderCard({ order }: KitchenOrderCardProps) {
         return 'bg-indigo-500';
       case 'APPROVED_BY_KITCHEN':
       case 'CONFIRMED':
+      case 'APPROVED':
         return 'bg-orange-500';
       case 'MARKED_AS_READY':
         return 'bg-green-500';
@@ -96,9 +63,7 @@ export function KitchenOrderCard({ order }: KitchenOrderCardProps) {
         <CardContent className="p-4 h-full flex flex-col">
           <div className="flex justify-between items-start mb-2">
             <Badge className={`${getStatusColor(order.status)} text-white border-0`}>
-              {order.status === 'APPROVED_BY_FRONT_DESK'
-                ? 'PRE-APPROVED'
-                : order.status.replace(/_/g, ' ')}
+              {order.status.replace(/_/g, ' ')}
             </Badge>
             <div className="flex flex-col items-end">
               <div className="flex items-center text-slate-500 text-sm">
@@ -121,7 +86,7 @@ export function KitchenOrderCard({ order }: KitchenOrderCardProps) {
                 {order.orderLines.map((line, index) => (
                   <div key={index} className="flex justify-between w-full">
                     <span>
-                      {line.quantity}x {line.name || 'Unknown Item'}
+                      {line.quantity}x {line.menuItemName || 'Unknown Item'}
                     </span>
                   </div>
                 ))}
@@ -130,15 +95,9 @@ export function KitchenOrderCard({ order }: KitchenOrderCardProps) {
           </div>
 
           <div className="mt-4 pt-4 border-t border-slate-100 flex gap-2">
-            {order.status === 'APPROVED_BY_FRONT_DESK' && (
-              <Button
-                className="w-full bg-orange-500 hover:bg-orange-600"
-                onClick={() => setIsApproveDialogOpen(true)}
-              >
-                <ChefHat className="w-4 h-4 mr-2" /> Start Cooking
-              </Button>
-            )}
-            {(order.status === 'APPROVED_BY_KITCHEN' || order.status === 'CONFIRMED') && (
+            {(order.status === 'APPROVED_BY_KITCHEN' ||
+              order.status === 'CONFIRMED' ||
+              order.status === 'APPROVED') && (
               <Button className="w-full bg-green-600 hover:bg-green-700" onClick={handleReady}>
                 <Check className="w-4 h-4 mr-2" /> Mark Ready
               </Button>
@@ -146,13 +105,6 @@ export function KitchenOrderCard({ order }: KitchenOrderCardProps) {
           </div>
         </CardContent>
       </Card>
-
-      <ApproveOrderDialog
-        isOpen={isApproveDialogOpen}
-        onClose={() => setIsApproveDialogOpen(false)}
-        onConfirm={handleApprove}
-        isLoading={isLoading}
-      />
     </>
   );
 }

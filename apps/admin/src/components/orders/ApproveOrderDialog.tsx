@@ -15,6 +15,8 @@ interface ApproveOrderDialogProps {
   onClose: () => void;
   onConfirm: (estimatedMinutes: number) => void;
   isLoading?: boolean;
+  scheduledFor?: string | null;
+  placedAt?: string;
 }
 
 export function ApproveOrderDialog({
@@ -22,8 +24,36 @@ export function ApproveOrderDialog({
   onClose,
   onConfirm,
   isLoading,
+  scheduledFor,
+  placedAt,
 }: ApproveOrderDialogProps) {
   const [estimatedMinutes, setEstimatedMinutes] = useState(15);
+
+  const handleMatchScheduledTime = () => {
+    if (!scheduledFor) return;
+    const now = new Date();
+    let scheduledTime: Date | null = null;
+
+    // Handle full ISO string
+    if (scheduledFor.includes('T')) {
+      scheduledTime = new Date(scheduledFor);
+    }
+    // Handle time-only string (e.g. "12:00:00")
+    else if (scheduledFor.includes(':')) {
+      const [hours, minutes] = scheduledFor.split(':').map(Number);
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        // Use placedAt date if available, otherwise use today
+        scheduledTime = placedAt ? new Date(placedAt) : new Date();
+        scheduledTime.setHours(hours, minutes, 0, 0);
+      }
+    }
+
+    if (!scheduledTime || isNaN(scheduledTime.getTime())) return;
+
+    const diffMs = scheduledTime.getTime() - now.getTime();
+    const diffMins = Math.max(1, Math.ceil(diffMs / (1000 * 60)));
+    setEstimatedMinutes(diffMins);
+  };
 
   const handleConfirm = () => {
     onConfirm(estimatedMinutes);
@@ -35,7 +65,7 @@ export function ApproveOrderDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Start Cooking Order</DialogTitle>
+          <DialogTitle>Approve Order & Set Time</DialogTitle>
         </DialogHeader>
         <div className="py-6 space-y-6">
           <div className="space-y-3">
@@ -47,7 +77,7 @@ export function ApproveOrderDialog({
                   variant={estimatedMinutes === time ? 'default' : 'outline'}
                   onClick={() => setEstimatedMinutes(time)}
                   className={`h-12 ${
-                    estimatedMinutes === time ? 'bg-amber-600 hover:bg-amber-700' : ''
+                    estimatedMinutes === time ? 'bg-indigo-600 hover:bg-indigo-700' : ''
                   }`}
                 >
                   {time} min
@@ -55,6 +85,16 @@ export function ApproveOrderDialog({
               ))}
             </div>
           </div>
+
+          {scheduledFor && (
+            <Button
+              variant="outline"
+              onClick={handleMatchScheduledTime}
+              className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+            >
+              Match Scheduled Time
+            </Button>
+          )}
 
           <div className="space-y-3">
             <Label htmlFor="estimatedTime" className="text-sm font-medium text-gray-700">
@@ -82,9 +122,9 @@ export function ApproveOrderDialog({
           <Button
             onClick={handleConfirm}
             disabled={isLoading}
-            className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700"
+            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700"
           >
-            {isLoading ? 'Confirming...' : 'Start Cooking'}
+            {isLoading ? 'Confirming...' : 'Approve Order'}
           </Button>
         </DialogFooter>
       </DialogContent>
