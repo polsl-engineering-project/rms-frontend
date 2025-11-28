@@ -430,6 +430,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get order details */
+        get: operations["getOrderDetails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/orders/{id}/customer-view": {
         parameters: {
             query?: never;
@@ -621,7 +638,7 @@ export interface components {
             customerInfo: components["schemas"]["CustomerInfo"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 20:30:37 */
+            /** @example 14:49:36 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLineRequest"][];
         };
@@ -642,7 +659,7 @@ export interface components {
             address: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 20:30:37 */
+            /** @example 14:49:36 */
             scheduledFor?: Record<string, never>;
             orderLines: components["schemas"]["OrderLineRequest"][];
         };
@@ -749,11 +766,11 @@ export interface components {
         PageableObject: {
             /** Format: int64 */
             offset?: number;
-            paged?: boolean;
             /** Format: int32 */
             pageNumber?: number;
             /** Format: int32 */
             pageSize?: number;
+            paged?: boolean;
             sort?: components["schemas"]["SortObject"];
             unpaged?: boolean;
         };
@@ -790,6 +807,34 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
+        OrderDetailsResponse: {
+            /** Format: uuid */
+            id?: string;
+            status?: string;
+            customerInfo?: components["schemas"]["CustomerInfo"];
+            address?: components["schemas"]["Address"];
+            /** @enum {string} */
+            deliveryMode?: "ASAP" | "SCHEDULED";
+            /** @example 14:49:36 */
+            scheduledFor?: Record<string, never>;
+            orderLines?: components["schemas"]["OrderLineResponse"][];
+            /** Format: int32 */
+            estimatedPreparationTimeMinutes?: number;
+            /** Format: date-time */
+            approvedAt?: string;
+            /** Format: date-time */
+            deliveryStartedAt?: string;
+            /** Format: date-time */
+            placedAt?: string;
+        };
+        OrderLineResponse: {
+            /** Format: uuid */
+            menuItemId?: string;
+            /** Format: int32 */
+            quantity?: number;
+            unitPrice?: number;
+            menuItemName?: string;
+        };
         OrderCustomerViewResponse: {
             /** Format: uuid */
             id?: string;
@@ -813,7 +858,7 @@ export interface components {
             lines?: components["schemas"]["OrderLine"][];
             deliveryAddress?: components["schemas"]["Address"];
             customerInfo?: components["schemas"]["CustomerInfo"];
-            /** @example 20:30:37 */
+            /** @example 14:49:36 */
             scheduledFor?: Record<string, never>;
             /** @enum {string} */
             type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
@@ -836,7 +881,7 @@ export interface components {
             lines?: components["schemas"]["OrderLine"][];
             deliveryAddress?: components["schemas"]["Address"];
             customerInfo?: components["schemas"]["CustomerInfo"];
-            /** @example 20:30:37 */
+            /** @example 14:49:36 */
             scheduledFor?: Record<string, never>;
             /** @enum {string} */
             type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
@@ -932,7 +977,7 @@ export interface components {
             address?: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode?: "ASAP" | "SCHEDULED";
-            /** @example 20:30:37 */
+            /** @example 14:49:36 */
             scheduledFor?: Record<string, never>;
             orderLines?: components["schemas"]["OrderLineResponse"][];
             /** Format: date-time */
@@ -947,14 +992,6 @@ export interface components {
             type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
-        };
-        OrderLineResponse: {
-            /** Format: uuid */
-            menuItemId?: string;
-            /** Format: int32 */
-            quantity?: number;
-            unitPrice?: number;
-            menuItemName?: string;
         };
         PageMenuItemResponse: {
             /** Format: int64 */
@@ -2351,6 +2388,37 @@ export interface operations {
             };
             /** @description Invalid input data */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getOrderDetails: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Order details retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OrderDetailsResponse"];
+                };
+            };
+            /** @description Order not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

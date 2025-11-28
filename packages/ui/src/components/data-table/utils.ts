@@ -1,4 +1,5 @@
 import { COLUMN_CELL_TYPE, type Column } from './types';
+import { format } from 'date-fns';
 
 /**
  * Get value from object using dot notation path
@@ -67,30 +68,21 @@ export function formatNumber(value: number, precision?: number): string {
  * Format date using basic formatting
  * This is a simple implementation - for advanced formatting, integrate date-fns or similar
  */
-export function formatDate(date: Date | string, format?: string): string {
+export function formatDate(date: Date | string, formatStr?: string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
 
   if (isNaN(dateObj.getTime())) {
     return 'Invalid Date';
   }
 
-  if (!format) {
+  if (!formatStr) {
     return dateObj.toLocaleDateString();
   }
 
-  // Simple format implementation - extend as needed
-  const year = dateObj.getFullYear();
-  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const day = String(dateObj.getDate()).padStart(2, '0');
-  const hours = String(dateObj.getHours()).padStart(2, '0');
-  const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-  const seconds = String(dateObj.getSeconds()).padStart(2, '0');
-
-  return format
-    .replace('yyyy', String(year))
-    .replace('MM', month)
-    .replace('dd', day)
-    .replace('HH', hours)
-    .replace('mm', minutes)
-    .replace('ss', seconds);
+  try {
+    return format(dateObj, formatStr);
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return dateObj.toLocaleDateString();
+  }
 }

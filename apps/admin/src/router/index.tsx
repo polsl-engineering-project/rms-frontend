@@ -13,6 +13,8 @@ import { RoleGuard } from '../components/RoleGuard';
 import { BillDetailsPage } from '../pages/BillDetailsPage';
 import { WaiterMenuSelectionPage } from '../pages/WaiterMenuSelectionPage';
 import { WaiterCreateBillPage } from '../pages/WaiterCreateBillPage';
+import { BillsPage } from '../pages/BillsPage';
+import { OrdersPage } from '../pages/OrdersPage';
 
 export const router = createBrowserRouter([
   {
@@ -79,11 +81,11 @@ export const router = createBrowserRouter([
           },
           {
             path: 'orders',
-            element: <></>,
+            element: <OrdersPage />,
           },
           {
             path: 'bills',
-            element: <></>,
+            element: <BillsPage />,
           },
         ],
       },
