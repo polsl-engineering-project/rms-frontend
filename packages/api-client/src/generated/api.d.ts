@@ -164,7 +164,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/orders/{id}/approve/kitchen": {
+    "/api/v1/orders/{id}/approve": {
         parameters: {
             query?: never;
             header?: never;
@@ -173,25 +173,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Approve order by kitchen */
-        post: operations["approveByKitchen"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/orders/{id}/approve/front-desk": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Approve order by front desk */
-        post: operations["approveByFrontDesk"];
+        /** Approve order */
+        post: operations["approve"];
         delete?: never;
         options?: never;
         head?: never;
@@ -430,6 +413,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search and filter orders with pagination */
+        get: operations["searchOrders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/orders/{id}/customer-view": {
         parameters: {
             query?: never;
@@ -588,18 +588,16 @@ export interface components {
             role?: "ADMIN" | "MANAGER" | "WAITER" | "COOK" | "DRIVER";
         };
         ChangeOrderLinesRequest: {
-            newLines?: components["schemas"]["OrderLine"][];
+            newLines?: components["schemas"]["OrderLineRequest"][];
             removedLines?: components["schemas"]["RemoveLine"][];
             /** Format: int32 */
             updatedEstimatedPreparationTimeMinutes?: number;
         };
-        OrderLine: {
+        OrderLineRequest: {
             /** Format: uuid */
             menuItemId: string;
             /** Format: int32 */
             quantity?: number;
-            /** Format: int64 */
-            version?: number;
         };
         RemoveLine: {
             /** Format: uuid */
@@ -610,7 +608,7 @@ export interface components {
         CancelOrderRequest: {
             reason: string;
         };
-        ApproveOrderByKitchenRequest: {
+        ApproveOrderRequest: {
             /** Format: int32 */
             estimatedPreparationMinutes?: number;
         };
@@ -623,9 +621,9 @@ export interface components {
             customerInfo: components["schemas"]["CustomerInfo"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 11:23:28 */
+            /** @example 20:30:37 */
             scheduledFor?: Record<string, never>;
-            orderLines: components["schemas"]["OrderLine"][];
+            orderLines: components["schemas"]["OrderLineRequest"][];
         };
         OrderPlacedResponse: {
             /** Format: uuid */
@@ -644,9 +642,9 @@ export interface components {
             address: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode: "ASAP" | "SCHEDULED";
-            /** @example 11:23:28 */
+            /** @example 20:30:37 */
             scheduledFor?: Record<string, never>;
-            orderLines: components["schemas"]["OrderLine"][];
+            orderLines: components["schemas"]["OrderLineRequest"][];
         };
         CreateMenuItemRequest: {
             name?: string;
@@ -707,8 +705,6 @@ export interface components {
             quantity?: number;
             unitPrice?: number;
             menuItemName?: string;
-            /** Format: int64 */
-            menuItemVersion?: number;
         };
         OpenBillRequest: {
             /** Format: int32 */
@@ -733,21 +729,21 @@ export interface components {
             password?: string;
         };
         PageUserResponse: {
-            /** Format: int32 */
-            totalPages?: number;
             /** Format: int64 */
             totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["UserResponse"][];
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
-            first?: boolean;
-            last?: boolean;
             empty?: boolean;
         };
         PageableObject: {
@@ -766,13 +762,47 @@ export interface components {
             sorted?: boolean;
             unsorted?: boolean;
         };
+        OrderPageResponse: {
+            content?: components["schemas"]["OrderSummaryResponse"][];
+            /** Format: int32 */
+            pageNumber?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            first?: boolean;
+            last?: boolean;
+            hasPrevious?: boolean;
+            hasNext?: boolean;
+        };
+        OrderSummaryResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            status?: "PENDING_APPROVAL" | "APPROVED_BY_FRONT_DESK" | "APPROVED" | "READY_FOR_PICKUP" | "READY_FOR_DRIVER" | "IN_DELIVERY" | "COMPLETED" | "CANCELLED";
+            /** @enum {string} */
+            deliveryMode?: "ASAP" | "SCHEDULED";
+            customerFirstName?: string;
+            /** Format: date-time */
+            placedAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
         OrderCustomerViewResponse: {
             /** Format: uuid */
             id?: string;
             status?: string;
+            /** @enum {string} */
+            orderType?: "PICKUP" | "DELIVERY";
             /** Format: int32 */
             estimatedPreparationMinutes?: number;
             cancellationReason?: string;
+            /** Format: date-time */
+            approvedAt?: string;
+            /** Format: date-time */
+            deliveryStartedAt?: string;
         };
         /** @description DeliveryOrderPlacedEvent schema, type: DELIVERY_ORDER_PLACED */
         DeliveryOrderPlacedEvent: {
@@ -783,12 +813,19 @@ export interface components {
             lines?: components["schemas"]["OrderLine"][];
             deliveryAddress?: components["schemas"]["Address"];
             customerInfo?: components["schemas"]["CustomerInfo"];
-            /** @example 11:23:28 */
+            /** @example 20:30:37 */
             scheduledFor?: Record<string, never>;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
+        };
+        OrderLine: {
+            menuItemId?: string;
+            /** Format: int32 */
+            quantity?: number;
+            unitPrice?: number;
+            menuItemName?: string;
         };
         /** @description PickUpOrderPlacedEvent schema, type: PICK_UP_ORDER_PLACED */
         PickUpOrderPlacedEvent: {
@@ -799,26 +836,15 @@ export interface components {
             lines?: components["schemas"]["OrderLine"][];
             deliveryAddress?: components["schemas"]["Address"];
             customerInfo?: components["schemas"]["CustomerInfo"];
-            /** @example 11:23:28 */
+            /** @example 20:30:37 */
             scheduledFor?: Record<string, never>;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
-            /** Format: date-time */
-            occurredAt?: string;
-        };
-        /** @description OrderApprovedByFrontDeskEvent schema, type: APPROVED_BY_FRONT_DESK */
-        OrderApprovedByFrontDeskEvent: {
-            /** Format: uuid */
-            orderId?: string;
-            /** Format: date-time */
-            approvedAt?: string;
-            /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
         /** @description OrderApprovedByKitchenEvent schema, type: APPROVED_BY_KITCHEN */
-        OrderApprovedByKitchenEvent: {
+        OrderApprovedEvent: {
             /** Format: uuid */
             orderId?: string;
             /** Format: date-time */
@@ -826,7 +852,7 @@ export interface components {
             /** Format: int32 */
             estimatedPreparationMinutes?: number;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
@@ -838,7 +864,7 @@ export interface components {
             cancelledAt?: string;
             reason?: string;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
@@ -849,7 +875,7 @@ export interface components {
             /** Format: date-time */
             completedAt?: string;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
@@ -860,7 +886,7 @@ export interface components {
             /** Format: date-time */
             startedAt?: string;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
@@ -880,7 +906,7 @@ export interface components {
             /** Format: int32 */
             updatedEstimatedPreparationMinutes?: number;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
@@ -891,9 +917,9 @@ export interface components {
             /** Format: date-time */
             readyAt?: string;
             /** @enum {string} */
-            readyStatus?: "PENDING_APPROVAL" | "APPROVED_BY_FRONT_DESK" | "CONFIRMED" | "READY_FOR_PICKUP" | "READY_FOR_DRIVER" | "IN_DELIVERY" | "COMPLETED" | "CANCELLED";
+            readyStatus?: "PENDING_APPROVAL" | "APPROVED_BY_FRONT_DESK" | "APPROVED" | "READY_FOR_PICKUP" | "READY_FOR_DRIVER" | "IN_DELIVERY" | "COMPLETED" | "CANCELLED";
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
@@ -906,52 +932,64 @@ export interface components {
             address?: components["schemas"]["Address"];
             /** @enum {string} */
             deliveryMode?: "ASAP" | "SCHEDULED";
-            /** @example 11:23:28 */
+            /** @example 20:30:37 */
             scheduledFor?: Record<string, never>;
+            orderLines?: components["schemas"]["OrderLineResponse"][];
             /** Format: date-time */
             placedAt?: string;
-            orderLines?: components["schemas"]["OrderLine"][];
             /** Format: int32 */
             estimatedPreparationTimeMinutes?: number;
+            /** Format: date-time */
+            approvedAt?: string;
+            /** Format: date-time */
+            deliveryStartedAt?: string;
             /** @enum {string} */
-            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED_BY_FRONT_DESK" | "APPROVED_BY_KITCHEN" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
+            type?: "INITIAL_DATA" | "DELIVERY_ORDER_PLACED" | "APPROVED" | "CANCELLED" | "COMPLETED" | "DELIVERY_STARTED" | "LINES_CHANGED" | "MARKED_AS_READY" | "PICK_UP_ORDER_PLACED";
             /** Format: date-time */
             occurredAt?: string;
         };
-        PageMenuItemResponse: {
+        OrderLineResponse: {
+            /** Format: uuid */
+            menuItemId?: string;
             /** Format: int32 */
-            totalPages?: number;
+            quantity?: number;
+            unitPrice?: number;
+            menuItemName?: string;
+        };
+        PageMenuItemResponse: {
             /** Format: int64 */
             totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["MenuItemResponse"][];
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
-            first?: boolean;
-            last?: boolean;
             empty?: boolean;
         };
         PageMenuCategoryResponse: {
-            /** Format: int32 */
-            totalPages?: number;
             /** Format: int64 */
             totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
             /** Format: int32 */
             size?: number;
             content?: components["schemas"]["MenuCategoryResponse"][];
             /** Format: int32 */
             number?: number;
             pageable?: components["schemas"]["PageableObject"];
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             numberOfElements?: number;
             sort?: components["schemas"]["SortObject"];
-            first?: boolean;
-            last?: boolean;
             empty?: boolean;
         };
         BillPageResponse: {
@@ -993,8 +1031,6 @@ export interface components {
             /** Format: int32 */
             quantity?: number;
             name?: string;
-            /** Format: int64 */
-            version?: number;
             unitPrice?: number;
         };
         BillSummaryWithLinesResponse: {
@@ -1691,7 +1727,7 @@ export interface operations {
             };
         };
     };
-    approveByKitchen: {
+    approve: {
         parameters: {
             query?: never;
             header?: never;
@@ -1702,7 +1738,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ApproveOrderByKitchenRequest"];
+                "application/json": components["schemas"]["ApproveOrderRequest"];
             };
         };
         responses: {
@@ -1721,35 +1757,6 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["ErrorResponse"];
                 };
-            };
-            /** @description Order not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    approveByFrontDesk: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Order approved successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
             /** @description Order not found */
             404: {
@@ -2314,6 +2321,45 @@ export interface operations {
             };
         };
     };
+    searchOrders: {
+        parameters: {
+            query?: {
+                statuses?: ("PENDING_APPROVAL" | "APPROVED_BY_FRONT_DESK" | "APPROVED" | "READY_FOR_PICKUP" | "READY_FOR_DRIVER" | "IN_DELIVERY" | "COMPLETED" | "CANCELLED")[];
+                placedFrom?: string;
+                placedTo?: string;
+                customerFirstName?: string;
+                deliveryMode?: "ASAP" | "SCHEDULED";
+                sortBy?: "PLACED_AT" | "UPDATED_AT" | "DELIVERY_MODE" | "STATUS";
+                sortDirection?: "ASC" | "DESC";
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Orders retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["OrderPageResponse"];
+                };
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getOrderForCustomer: {
         parameters: {
             query?: never;
@@ -2360,7 +2406,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": (string & (components["schemas"]["DeliveryOrderPlacedEvent"] | components["schemas"]["PickUpOrderPlacedEvent"] | components["schemas"]["OrderApprovedByFrontDeskEvent"] | components["schemas"]["OrderApprovedByKitchenEvent"] | components["schemas"]["OrderCancelledEvent"] | components["schemas"]["OrderCompletedEvent"] | components["schemas"]["OrderDeliveryStartedEvent"] | components["schemas"]["OrderLinesChangedEvent"] | components["schemas"]["OrderMarkedAsReadyEvent"] | components["schemas"]["OrderInitialDataEvent"]))[];
+                    "*/*": (string & (components["schemas"]["DeliveryOrderPlacedEvent"] | components["schemas"]["PickUpOrderPlacedEvent"] | components["schemas"]["OrderApprovedEvent"] | components["schemas"]["OrderCancelledEvent"] | components["schemas"]["OrderCompletedEvent"] | components["schemas"]["OrderDeliveryStartedEvent"] | components["schemas"]["OrderLinesChangedEvent"] | components["schemas"]["OrderMarkedAsReadyEvent"] | components["schemas"]["OrderInitialDataEvent"]))[];
                 };
             };
         };

@@ -3,7 +3,6 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  Check,
   Clock,
   Truck,
   CheckCircle,
@@ -16,25 +15,27 @@ import type { components } from '@repo/api-client';
 type OrderCustomerViewResponse = components['schemas']['OrderCustomerViewResponse'];
 
 interface OrderTimelineProps {
-  status: OrderCustomerViewResponse['status'];
+  order: OrderCustomerViewResponse;
 }
 
-export function OrderTimeline({ status }: OrderTimelineProps) {
+export function OrderTimeline({ order }: OrderTimelineProps) {
+  const { status, orderType } = order;
   const getProgressLevel = (s: string | undefined) => {
     switch (s) {
       case ORDER_STATUSES.PENDING_APPROVAL:
         return 0;
-      case ORDER_STATUSES.APPROVED_BY_FRONT_DESK:
-        return 1;
+      case ORDER_STATUSES.APPROVED:
       case ORDER_STATUSES.CONFIRMED:
-        return 2;
+      case 'APPROVED_BY_FRONT_DESK': // Fallback
+      case 'APPROVED_BY_KITCHEN': // Fallback
+        return 1;
       case ORDER_STATUSES.READY_FOR_PICKUP:
       case ORDER_STATUSES.READY_FOR_DRIVER:
-        return 3;
+        return 2;
       case ORDER_STATUSES.IN_DELIVERY:
-        return 4;
+        return 3;
       case ORDER_STATUSES.COMPLETED:
-        return 5;
+        return 4;
       default:
         return -1;
     }
@@ -42,32 +43,38 @@ export function OrderTimeline({ status }: OrderTimelineProps) {
 
   const currentLevel = getProgressLevel(status);
 
-  const showDeliveryStep =
-    status === ORDER_STATUSES.IN_DELIVERY || status === ORDER_STATUSES.READY_FOR_DRIVER;
+  const showDeliveryStep = orderType === 'DELIVERY';
 
   const stages = [
     { id: 'placed', label: 'Order Placed', level: 0, Icon: Clock },
-    { id: 'accepted', label: 'Front Desk Approved', level: 1, Icon: Check },
-    { id: 'preparing', label: 'Preparing', level: 2, Icon: ChefHat },
-    { id: 'ready', label: 'Order Ready', level: 3, Icon: Package },
+    { id: 'preparing', label: 'Preparing', level: 1, Icon: ChefHat },
+    {
+      id: 'ready',
+      label: orderType === 'DELIVERY' ? 'Ready for Driver' : 'Ready for Pickup',
+      level: 2,
+      Icon: Package,
+    },
   ];
 
   if (showDeliveryStep) {
-    stages.push({ id: 'delivery', label: 'Out for Delivery', level: 4, Icon: Truck });
+    stages.push({ id: 'delivery', label: 'Out for Delivery', level: 3, Icon: Truck });
   }
 
-  stages.push({ id: 'completed', label: 'Completed', level: 5, Icon: CheckCircle });
+  stages.push({
+    id: 'completed',
+    label: 'Completed',
+    level: showDeliveryStep ? 4 : 3,
+    Icon: CheckCircle,
+  });
 
   const getStageDescription = (stageId: string) => {
     switch (stageId) {
       case 'placed':
         return 'Waiting for confirmation...';
-      case 'accepted':
-        return 'Order sent to kitchen...';
       case 'preparing':
-        return 'Chefs are cooking your meal...';
+        return 'Order approved & kitchen is preparing it...';
       case 'ready':
-        return status === ORDER_STATUSES.READY_FOR_DRIVER
+        return orderType === 'DELIVERY'
           ? 'Waiting for driver assignment...'
           : 'Ready for pickup at the counter!';
       case 'delivery':

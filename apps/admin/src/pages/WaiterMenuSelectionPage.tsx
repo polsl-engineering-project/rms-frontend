@@ -5,6 +5,7 @@ import { WaiterLayout } from '../components/waiter/WaiterLayout';
 import { MenuSelection } from '../components/waiter/MenuSelection';
 import type { CartItem } from '../types';
 import { toast, Loader2 } from '@repo/ui';
+import { queryClient } from '../lib/queryClient';
 
 export function WaiterMenuSelectionPage() {
   const { id: billId } = useParams<{ id: string }>();
@@ -74,6 +75,9 @@ export function WaiterMenuSelectionPage() {
             newLines: itemsToAdd,
           },
         });
+        queryClient.invalidateQueries({
+          queryKey: ['get', '/api/v1/bills/{id}', { params: { path: { id: billId } } }],
+        });
       }
 
       // Then, remove items if any
@@ -83,6 +87,9 @@ export function WaiterMenuSelectionPage() {
           body: {
             removedLines: itemsToRemove,
           },
+        });
+        queryClient.invalidateQueries({
+          queryKey: ['get', '/api/v1/bills/{id}', { params: { path: { id: billId } } }],
         });
       }
 

@@ -39,7 +39,11 @@ export function useCloseBill() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['get', '/api/v1/bills'] });
       queryClient.invalidateQueries({
-        queryKey: ['get', '/api/v1/bills/{id}', { path: { id: variables.params.path.id } }],
+        queryKey: [
+          'get',
+          '/api/v1/bills/{id}',
+          { params: { path: { id: variables.params.path.id } } },
+        ],
       });
     },
   });
@@ -52,7 +56,11 @@ export function useRemoveItem() {
   const { mutateAsync, ...rest } = $api.useMutation('post', '/api/v1/bills/{id}/remove-items', {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['get', '/api/v1/bills/{id}', { path: { id: variables.params.path.id } }],
+        queryKey: [
+          'get',
+          '/api/v1/bills/{id}',
+          { params: { path: { id: variables.params.path.id } } },
+        ],
       });
     },
   });

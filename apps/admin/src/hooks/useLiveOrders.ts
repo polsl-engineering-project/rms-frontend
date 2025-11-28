@@ -56,24 +56,14 @@ export function useLiveOrders() {
             break;
           }
 
-          case OrderEventType.APPROVED_BY_FRONT_DESK: {
-            const data = message.data;
-            setOrders((prev) =>
-              prev.map((order) =>
-                order.id === data.orderId ? { ...order, status: 'APPROVED_BY_FRONT_DESK' } : order
-              )
-            );
-            break;
-          }
-
-          case OrderEventType.APPROVED_BY_KITCHEN: {
+          case OrderEventType.APPROVED: {
             const data = message.data;
             setOrders((prev) =>
               prev.map((order) =>
                 order.id === data.orderId
                   ? {
                       ...order,
-                      status: 'APPROVED_BY_KITCHEN',
+                      status: 'APPROVED',
                       estimatedPreparationTimeMinutes: data.estimatedPreparationMinutes,
                     }
                   : order

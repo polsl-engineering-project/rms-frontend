@@ -56,7 +56,30 @@ export function OrderTypeSelector({
         <CardContent className="space-y-4">
           <RadioGroup
             value={deliveryMode}
-            onValueChange={(value) => onDeliveryModeChange(value as DeliveryMode)}
+            onValueChange={(value) => {
+              const newMode = value as DeliveryMode;
+              onDeliveryModeChange(newMode);
+
+              if (newMode === DELIVERY_MODES.SCHEDULED && !scheduledTime) {
+                const now = new Date();
+                // Add 1.5 hours (90 minutes)
+                now.setMinutes(now.getMinutes() + 90);
+
+                // Round to nearest 15 minutes
+                const minutes = now.getMinutes();
+                const roundedMinutes = Math.round(minutes / 15) * 15;
+                now.setMinutes(roundedMinutes);
+                now.setSeconds(0);
+                now.setMilliseconds(0);
+
+                const timeString = now.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                });
+                onScheduledTimeChange(timeString);
+              }
+            }}
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem

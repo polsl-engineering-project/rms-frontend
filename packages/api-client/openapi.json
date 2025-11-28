@@ -769,13 +769,13 @@
         }
       }
     },
-    "/api/v1/orders/{id}/approve/kitchen": {
+    "/api/v1/orders/{id}/approve": {
       "post": {
         "tags": [
           "Order actions"
         ],
-        "summary": "Approve order by kitchen",
-        "operationId": "approveByKitchen",
+        "summary": "Approve order",
+        "operationId": "approve",
         "parameters": [
           {
             "name": "id",
@@ -790,7 +790,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ApproveOrderByKitchenRequest"
+                "$ref": "#/components/schemas/ApproveOrderRequest"
               }
             }
           },
@@ -809,40 +809,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Order not found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{id}/approve/front-desk": {
-      "post": {
-        "tags": [
-          "Order actions"
-        ],
-        "summary": "Approve order by front desk",
-        "operationId": "approveByFrontDesk",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Order approved successfully"
           },
           "404": {
             "description": "Order not found",
@@ -1568,6 +1534,142 @@
         }
       }
     },
+    "/api/v1/orders": {
+      "get": {
+        "tags": [
+          "Order actions"
+        ],
+        "summary": "Search and filter orders with pagination",
+        "operationId": "searchOrders",
+        "parameters": [
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "PENDING_APPROVAL",
+                  "APPROVED_BY_FRONT_DESK",
+                  "APPROVED",
+                  "READY_FOR_PICKUP",
+                  "READY_FOR_DRIVER",
+                  "IN_DELIVERY",
+                  "COMPLETED",
+                  "CANCELLED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "placedFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "placedTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "customerFirstName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deliveryMode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASAP",
+                "SCHEDULED"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PLACED_AT",
+                "UPDATED_AT",
+                "DELIVERY_MODE",
+                "STATUS"
+              ]
+            }
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders retrieved successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/orders/{id}/customer-view": {
       "get": {
         "tags": [
@@ -1634,10 +1736,7 @@
                         "$ref": "#/components/schemas/PickUpOrderPlacedEvent"
                       },
                       {
-                        "$ref": "#/components/schemas/OrderApprovedByFrontDeskEvent"
-                      },
-                      {
-                        "$ref": "#/components/schemas/OrderApprovedByKitchenEvent"
+                        "$ref": "#/components/schemas/OrderApprovedEvent"
                       },
                       {
                         "$ref": "#/components/schemas/OrderCancelledEvent"
@@ -2130,7 +2229,7 @@
           "newLines": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderLine"
+              "$ref": "#/components/schemas/OrderLineRequest"
             }
           },
           "removedLines": {
@@ -2145,7 +2244,7 @@
           }
         }
       },
-      "OrderLine": {
+      "OrderLineRequest": {
         "type": "object",
         "properties": {
           "menuItemId": {
@@ -2156,10 +2255,6 @@
             "type": "integer",
             "format": "int32",
             "minimum": 1
-          },
-          "version": {
-            "type": "integer",
-            "format": "int64"
           }
         },
         "required": [
@@ -2196,7 +2291,7 @@
           "reason"
         ]
       },
-      "ApproveOrderByKitchenRequest": {
+      "ApproveOrderRequest": {
         "type": "object",
         "properties": {
           "estimatedPreparationMinutes": {
@@ -2234,12 +2329,12 @@
           },
           "scheduledFor": {
             "type": "object",
-            "example": "11:23:28"
+            "example": "20:30:37"
           },
           "orderLines": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderLine"
+              "$ref": "#/components/schemas/OrderLineRequest"
             },
             "minItems": 1
           }
@@ -2300,12 +2395,12 @@
           },
           "scheduledFor": {
             "type": "object",
-            "example": "11:23:28"
+            "example": "20:30:37"
           },
           "orderLines": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderLine"
+              "$ref": "#/components/schemas/OrderLineRequest"
             },
             "minItems": 1
           }
@@ -2507,10 +2602,6 @@
           },
           "menuItemName": {
             "type": "string"
-          },
-          "menuItemVersion": {
-            "type": "integer",
-            "format": "int64"
           }
         }
       },
@@ -2588,13 +2679,13 @@
       "PageUserResponse": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
           "totalElements": {
             "type": "integer",
             "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           },
           "size": {
             "type": "integer",
@@ -2613,18 +2704,18 @@
           "pageable": {
             "$ref": "#/components/schemas/PageableObject"
           },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
           },
           "sort": {
             "$ref": "#/components/schemas/SortObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
           },
           "empty": {
             "type": "boolean"
@@ -2671,6 +2762,85 @@
           }
         }
       },
+      "OrderPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderSummaryResponse"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "hasPrevious": {
+            "type": "boolean"
+          },
+          "hasNext": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OrderSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_APPROVAL",
+              "APPROVED_BY_FRONT_DESK",
+              "APPROVED",
+              "READY_FOR_PICKUP",
+              "READY_FOR_DRIVER",
+              "IN_DELIVERY",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "deliveryMode": {
+            "type": "string",
+            "enum": [
+              "ASAP",
+              "SCHEDULED"
+            ]
+          },
+          "customerFirstName": {
+            "type": "string"
+          },
+          "placedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "OrderCustomerViewResponse": {
         "type": "object",
         "properties": {
@@ -2681,12 +2851,27 @@
           "status": {
             "type": "string"
           },
+          "orderType": {
+            "type": "string",
+            "enum": [
+              "PICKUP",
+              "DELIVERY"
+            ]
+          },
           "estimatedPreparationMinutes": {
             "type": "integer",
             "format": "int32"
           },
           "cancellationReason": {
             "type": "string"
+          },
+          "approvedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deliveryStartedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -2716,15 +2901,14 @@
           },
           "scheduledFor": {
             "type": "object",
-            "example": "11:23:28"
+            "example": "20:30:37"
           },
           "type": {
             "type": "string",
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -2736,6 +2920,24 @@
           "occurredAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "OrderLine": {
+        "type": "object",
+        "properties": {
+          "menuItemId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "menuItemName": {
+            "type": "string"
           }
         }
       },
@@ -2765,15 +2967,14 @@
           },
           "scheduledFor": {
             "type": "object",
-            "example": "11:23:28"
+            "example": "20:30:37"
           },
           "type": {
             "type": "string",
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -2788,40 +2989,7 @@
           }
         }
       },
-      "OrderApprovedByFrontDeskEvent": {
-        "type": "object",
-        "description": "OrderApprovedByFrontDeskEvent schema, type: APPROVED_BY_FRONT_DESK",
-        "properties": {
-          "orderId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "approvedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "INITIAL_DATA",
-              "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
-              "CANCELLED",
-              "COMPLETED",
-              "DELIVERY_STARTED",
-              "LINES_CHANGED",
-              "MARKED_AS_READY",
-              "PICK_UP_ORDER_PLACED"
-            ]
-          },
-          "occurredAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "OrderApprovedByKitchenEvent": {
+      "OrderApprovedEvent": {
         "type": "object",
         "description": "OrderApprovedByKitchenEvent schema, type: APPROVED_BY_KITCHEN",
         "properties": {
@@ -2842,8 +3010,7 @@
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -2878,8 +3045,7 @@
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -2911,8 +3077,7 @@
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -2944,8 +3109,7 @@
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -3005,8 +3169,7 @@
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -3038,7 +3201,7 @@
             "enum": [
               "PENDING_APPROVAL",
               "APPROVED_BY_FRONT_DESK",
-              "CONFIRMED",
+              "APPROVED",
               "READY_FOR_PICKUP",
               "READY_FOR_DRIVER",
               "IN_DELIVERY",
@@ -3051,8 +3214,7 @@
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -3093,29 +3255,36 @@
           },
           "scheduledFor": {
             "type": "object",
-            "example": "11:23:28"
+            "example": "20:30:37"
+          },
+          "orderLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLineResponse"
+            }
           },
           "placedAt": {
             "type": "string",
             "format": "date-time"
           },
-          "orderLines": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderLine"
-            }
-          },
           "estimatedPreparationTimeMinutes": {
             "type": "integer",
             "format": "int32"
+          },
+          "approvedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deliveryStartedAt": {
+            "type": "string",
+            "format": "date-time"
           },
           "type": {
             "type": "string",
             "enum": [
               "INITIAL_DATA",
               "DELIVERY_ORDER_PLACED",
-              "APPROVED_BY_FRONT_DESK",
-              "APPROVED_BY_KITCHEN",
+              "APPROVED",
               "CANCELLED",
               "COMPLETED",
               "DELIVERY_STARTED",
@@ -3130,16 +3299,35 @@
           }
         }
       },
-      "PageMenuItemResponse": {
+      "OrderLineResponse": {
         "type": "object",
         "properties": {
-          "totalPages": {
+          "menuItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
             "type": "integer",
             "format": "int32"
           },
+          "unitPrice": {
+            "type": "number"
+          },
+          "menuItemName": {
+            "type": "string"
+          }
+        }
+      },
+      "PageMenuItemResponse": {
+        "type": "object",
+        "properties": {
           "totalElements": {
             "type": "integer",
             "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           },
           "size": {
             "type": "integer",
@@ -3158,18 +3346,18 @@
           "pageable": {
             "$ref": "#/components/schemas/PageableObject"
           },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
           },
           "sort": {
             "$ref": "#/components/schemas/SortObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
           },
           "empty": {
             "type": "boolean"
@@ -3179,13 +3367,13 @@
       "PageMenuCategoryResponse": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
           "totalElements": {
             "type": "integer",
             "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           },
           "size": {
             "type": "integer",
@@ -3204,18 +3392,18 @@
           "pageable": {
             "$ref": "#/components/schemas/PageableObject"
           },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
           },
           "sort": {
             "$ref": "#/components/schemas/SortObject"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
           },
           "empty": {
             "type": "boolean"
@@ -3316,10 +3504,6 @@
           },
           "name": {
             "type": "string"
-          },
-          "version": {
-            "type": "integer",
-            "format": "int64"
           },
           "unitPrice": {
             "type": "number"

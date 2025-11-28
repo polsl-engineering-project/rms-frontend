@@ -17,11 +17,13 @@ import {
   Truck,
   Eye,
   DropdownMenuSeparator,
+  Package,
 } from '@repo/ui';
 import { OrderDetailsResponse } from '../../../types/orders-ws';
 import { fetchClient } from '../../../api/client';
 import { useState } from 'react';
 import { OrderDetailsDialog } from './OrderDetailsDialog';
+import { ApproveOrderDialog } from '../../orders/ApproveOrderDialog';
 
 interface LiveOrderCardProps {
   order: OrderDetailsResponse;
@@ -29,19 +31,41 @@ interface LiveOrderCardProps {
 export function LiveOrderCard({ order }: LiveOrderCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isApproveDialogOpen, setIsApproveDialogOpen] = useState(false);
+
+  const handleApprove = async (estimatedMinutes: number) => {
+    setIsLoading(true);
+    try {
+      const response = await fetchClient.POST('/api/v1/orders/{id}/approve', {
+        params: { path: { id: order.id } },
+        body: { estimatedPreparationMinutes: estimatedMinutes },
+      });
+
+      if (response?.error) {
+        toast.error('Failed to approve order');
+      } else {
+        toast.success('Order approved successfully');
+        setIsApproveDialogOpen(false);
+      }
+    } catch (error) {
+      console.error('Action failed', error);
+      toast.error('An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAction = async (
-    action: 'approve' | 'approve-kitchen' | 'cancel' | 'ready' | 'complete' | 'start-delivery'
+    action: 'approve' | 'cancel' | 'ready' | 'complete' | 'start-delivery'
   ) => {
     setIsLoading(true);
     try {
       let response;
       switch (action) {
         case 'approve':
-          response = await fetchClient.POST('/api/v1/orders/{id}/approve/front-desk', {
-            params: { path: { id: order.id } },
-          });
-          break;
+          setIsApproveDialogOpen(true);
+          setIsLoading(false);
+          return;
         case 'cancel':
           response = await fetchClient.POST('/api/v1/orders/{id}/cancel', {
             params: { path: { id: order.id } },
@@ -88,6 +112,7 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
       case 'APPROVED_BY_FRONT_DESK':
         return 'bg-indigo-500';
       case 'APPROVED_BY_KITCHEN':
+      case 'APPROVED':
         return 'bg-orange-500';
       case 'READY_FOR_PICKUP':
       case 'READY_FOR_DRIVER':
@@ -121,6 +146,7 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
       'PENDING_APPROVAL',
       'APPROVED_BY_FRONT_DESK',
       'APPROVED_BY_KITCHEN',
+      'APPROVED',
       'READY_FOR_PICKUP',
       'READY_FOR_DRIVER',
       'DELIVERY_STARTED',
@@ -155,7 +181,7 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
             <X className="w-4 h-4 mr-2" /> Reject Order
           </DropdownMenuItem>
         )}
-        {order.status === 'APPROVED_BY_KITCHEN' && (
+        {(order.status === 'APPROVED_BY_KITCHEN' || order.status === 'APPROVED') && (
           <DropdownMenuItem onClick={() => handleAction('ready')}>
             <ChefHat className="w-4 h-4 mr-2 text-orange-500" /> Mark Ready
           </DropdownMenuItem>
@@ -190,11 +216,25 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
           >
             <CardContent className="p-4 h-full flex flex-col">
               <div className="flex justify-between items-start mb-2">
-                <Badge className={`${getStatusColor(order.status)} text-white border-0`}>
-                  {order.status === 'APPROVED_BY_FRONT_DESK'
-                    ? 'PRE-APPROVED'
-                    : order.status.replace(/_/g, ' ')}
-                </Badge>
+                <div className="flex flex-col gap-1 items-start">
+                  <Badge className={`${getStatusColor(order.status)} text-white border-0`}>
+                    {order.status === 'APPROVED_BY_FRONT_DESK'
+                      ? 'PRE-APPROVED'
+                      : order.status.replace(/_/g, ' ')}
+                  </Badge>
+                  {order.address ? (
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      <Truck className="w-3 h-3 mr-1" /> Delivery
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="outline"
+                      className="bg-orange-50 text-orange-700 border-orange-200"
+                    >
+                      <Package className="w-3 h-3 mr-1" /> Pickup
+                    </Badge>
+                  )}
+                </div>
                 <div className="flex flex-col items-end">
                   <div className="flex items-center text-slate-500 text-sm">
                     <Clock className="w-4 h-4 mr-1" />
@@ -244,6 +284,15 @@ export function LiveOrderCard({ order }: LiveOrderCardProps) {
         isOpen={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
         order={order}
+      />
+
+      <ApproveOrderDialog
+        isOpen={isApproveDialogOpen}
+        onClose={() => setIsApproveDialogOpen(false)}
+        onConfirm={handleApprove}
+        isLoading={isLoading}
+        scheduledFor={order.scheduledFor}
+        placedAt={order.placedAt}
       />
     </>
   );
