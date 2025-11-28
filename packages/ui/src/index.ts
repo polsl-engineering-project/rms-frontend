@@ -114,6 +114,22 @@ export {
   SheetDescription,
 } from './components/ui/sheet';
 
+export { Popover, PopoverTrigger, PopoverContent } from './components/ui/popover';
+
+export {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+} from './components/ui/command';
+
+export { Calendar } from './components/ui/calendar';
+
 export { ScrollArea, ScrollBar } from './components/ui/scroll-area';
 
 // Data Table Components
@@ -124,7 +140,6 @@ export { COLUMN_CELL_TYPE } from './components/data-table';
 // Icons from lucide-react
 export {
   LogOut,
-  User,
   ChevronDown,
   Minus,
   Plus,
@@ -134,7 +149,7 @@ export {
   Clock,
   MapPin,
   ArrowLeft,
-  Calendar,
+  CalendarIcon,
   AlertCircle,
   CheckCircle,
   Truck,
@@ -145,7 +160,6 @@ export {
   Trash2,
   ChevronLeft,
   Users,
-  Loader2,
   Receipt,
   X,
   ShoppingBag,
@@ -153,9 +167,15 @@ export {
   Edit,
   MoreHorizontal,
   Check,
+  Loader2,
+  User,
+  DollarSign,
+  Hash,
 } from 'lucide-react';
 
 export { Toaster } from './components/ui/sonner';
 export { toast } from 'sonner';
 
 export { TimePicker } from './components/ui/time-picker';
+export { DatePicker } from './components/ui/date-picker';
+export { DateTimePicker } from './components/ui/date-time-picker';

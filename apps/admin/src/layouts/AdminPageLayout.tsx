@@ -17,7 +17,7 @@ export function AdminPageLayout() {
     <div className="bg-background mt-2 flex-col w-full">
       <div className="flex justify-center mb-2">
         <Tabs value={currentTab} onValueChange={handleTabChange} className="w-auto">
-          <TabsList className="grid grid-cols-4 gap-1">
+          <TabsList className="grid grid-cols-5 gap-1">
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="items">Items</TabsTrigger>
