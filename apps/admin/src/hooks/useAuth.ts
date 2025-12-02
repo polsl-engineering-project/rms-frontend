@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/auth';
 import type { paths } from '@repo/api-client';
 import type { CurrentUser } from '../types/auth';
 import { toast } from '@repo/ui';
+import { useNavigate } from 'react-router-dom';
 
 // Type definitions from OpenAPI spec
 type LoginRequest =

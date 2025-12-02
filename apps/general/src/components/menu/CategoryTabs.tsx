@@ -15,14 +15,14 @@ export function CategoryTabs({
   onSelectCategory,
 }: CategoryTabsProps) {
   return (
-    <Tabs
-      value={selectedCategoryId || ''}
-      onValueChange={onSelectCategory}
-      className="w-full"
-    >
-      <TabsList className="w-full overflow-x-auto flex justify-start mb-6">
+    <Tabs value={selectedCategoryId || ''} onValueChange={onSelectCategory} className="w-full">
+      <TabsList className="w-full overflow-x-auto flex justify-start mb-6 bg-amber-100 py-0 px-1">
         {categories.map((category) => (
-          <TabsTrigger key={category.id} value={category.id!}>
+          <TabsTrigger
+            key={category.id}
+            value={category.id!}
+            className="data-[state=active]:bg-amber-600 data-[state=active]:text-white"
+          >
             {category.name}
           </TabsTrigger>
         ))}

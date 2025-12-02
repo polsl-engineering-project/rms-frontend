@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { components } from '@repo/api-client';
-import { DataTable, TableToolbar, Button } from '@repo/ui';
-import { Plus } from 'lucide-react';
+import { DataTable, TableToolbar, Button, Plus } from '@repo/ui';
 import { fetchClient } from '../../api/client';
 import { createUserColumns } from './UserTable.config';
 import { useAuthStore } from '../../stores/auth';

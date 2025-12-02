@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { components } from '@repo/api-client';
-import {
-  Button,
-  Badge,
-  ShoppingCart,
-  Package,
-} from '@repo/ui';
+import { Button, Badge, ShoppingCart, Package } from '@repo/ui';
 import { useCartStore } from '../stores/cart';
 import { ItemDetailDialog } from '../components/ItemDetailDialog';
 import { EmptyState } from '../components/EmptyState';
@@ -27,12 +22,8 @@ export function MenuPage() {
     state.items.reduce((total, item) => total + item.quantity, 0)
   );
 
-  const {
-    categoriesLoading,
-    itemsLoading,
-    activeCategories,
-    menuItems,
-  } = useMenu(selectedCategoryId);
+  const { categoriesLoading, itemsLoading, activeCategories, menuItems } =
+    useMenu(selectedCategoryId);
 
   useEffect(() => {
     if (activeCategories.length > 0 && !selectedCategoryId) {
@@ -105,11 +96,7 @@ export function MenuPage() {
 
           {/* Items Grid */}
           <div className="flex-1">
-            <MenuGrid
-              isLoading={itemsLoading}
-              items={menuItems}
-              onItemClick={handleItemClick}
-            />
+            <MenuGrid isLoading={itemsLoading} items={menuItems} onItemClick={handleItemClick} />
           </div>
         </div>
 

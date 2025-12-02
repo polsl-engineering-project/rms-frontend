@@ -1,7 +1,9 @@
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate, useMatches } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuthStore } from '../stores/auth';
 import { useAuthActions } from '../hooks/useAuth';
+import type { RouteHandle } from '../types/router';
+import type { UserRole } from '../types/auth';
 import {
   Button,
   Avatar,
@@ -23,6 +25,7 @@ export function ProtectedLayout() {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
+  const matches = useMatches();
   const { logout } = useAuthActions();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -30,6 +33,17 @@ export function ProtectedLayout() {
   // If not authenticated, redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Check for role access
+  const hasAccess = matches.every((match) => {
+    const handle = match.handle as RouteHandle | undefined;
+    if (!handle?.allowedRoles) return true;
+    return user?.role && handle.allowedRoles.includes(user.role as UserRole);
+  });
+
+  if (!hasAccess) {
+    return <Navigate to="/" replace />;
   }
 
   // Get current page name from path

@@ -13,6 +13,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  DateTimePicker,
   CardDescription,
 } from '@repo/ui';
 import { FilterToolbar } from './FilterToolbar';
@@ -20,7 +21,6 @@ import { UserIdSelect } from '../filters/UserIdSelect';
 import { MenuItemSelect } from '../filters/MenuItemSelect';
 import { columns, BILL_STATUS, BillStatus, BillSummaryResponse } from './BillsTable.config';
 import { BillDetailsDialog } from '../dialogs/BillDetailsDialog';
-import { DateTimePicker } from '@repo/ui';
 
 export function BillsTable() {
   const [page, setPage] = useState(0);

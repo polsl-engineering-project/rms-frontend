@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription } from '@repo/ui';
 import { ArrowRight } from 'lucide-react';
-import { RoleGuard } from '../components/RoleGuard';
+import { RoleGuard } from '../components/auth/RoleGuard';
 import { roleArrayToRoleObject } from '../utils/roleArrayToRoleObject';
 import { PORTALS } from '../constants/portals';
 

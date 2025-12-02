@@ -29,7 +29,7 @@ export function MenuItemCard({ item, onClick }: MenuItemCardProps) {
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-lg line-clamp-1">{item.name}</h3>
-          <span className="font-bold text-lg text-primary whitespace-nowrap ml-2">
+          <span className="font-bold text-lg text-amber-800 whitespace-nowrap ml-2">
             ${item.price?.toFixed(2)}
           </span>
         </div>

@@ -79,14 +79,20 @@ export function KitchenOrderCard({ order }: KitchenOrderCardProps) {
           </div>
           <div className="text-lg font-semibold truncate mb-3">#{order.id.substring(0, 8)}</div>
 
-          <div className="flex-1 flex flex-col gap-3 text-sm">
+          <div className="flex-1 flex flex-col gap-3 text-lg">
             <div className="flex items-start gap-2 text-slate-600">
-              <ShoppingBag className="w-4 h-4 mt-0.5 shrink-0" />
+              <ShoppingBag className="w-5 h-5 mt-1 shrink-0" />
               <div className="flex flex-col w-full">
                 {order.orderLines.map((line, index) => (
-                  <div key={index} className="flex justify-between w-full">
-                    <span>
-                      {line.quantity}x {line.menuItemName || 'Unknown Item'}
+                  <div
+                    key={index}
+                    className="flex justify-between w-full border-b border-slate-100 pb-2 last:border-0 last:pb-0"
+                  >
+                    <span className="flex items-center gap-2 font-semibold">
+                      <span className="font-bold bg-slate-900 text-white px-2 py-0.5 rounded">
+                        {line.quantity}x
+                      </span>{' '}
+                      {line.menuItemName || 'Unknown Item'}
                     </span>
                   </div>
                 ))}

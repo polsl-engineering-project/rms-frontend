@@ -58,7 +58,7 @@ export function ItemDetailDialog({ item, open, onOpenChange }: ItemDetailDialogP
         <div className="space-y-4">
           <div>
             <h2 className="text-2xl font-bold mb-2">{item.name}</h2>
-            <p className="text-3xl font-bold text-primary">${item.price?.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-amber-800">${item.price?.toFixed(2)}</p>
           </div>
 
           <p className="text-gray-700">{item.description}</p>

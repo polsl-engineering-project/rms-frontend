@@ -9,7 +9,7 @@ import { UserManagementPage } from '../pages/UserManagementPage';
 import { MenuCategoriesPage } from '../pages/MenuCategoriesPage';
 import { MenuItemsPage } from '../pages/MenuItemsPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
-import { RoleGuard } from '../components/RoleGuard';
+
 import { BillDetailsPage } from '../pages/BillDetailsPage';
 import { WaiterMenuSelectionPage } from '../pages/WaiterMenuSelectionPage';
 import { WaiterCreateBillPage } from '../pages/WaiterCreateBillPage';
@@ -34,34 +34,43 @@ export const router = createBrowserRouter([
       {
         path: 'kitchen',
         element: <KitchenDashboard />,
+        handle: {
+          allowedRoles: ['COOK', 'ADMIN', 'MANAGER'],
+        },
       },
 
       // Waiter Interface
       {
-        path: 'waiter',
-        element: <WaiterDashboardPage />,
-      },
-      {
-        path: 'waiter/create',
-        element: <WaiterCreateBillPage />,
-      },
-      {
-        path: 'waiter/bill/:id',
-        element: <BillDetailsPage />,
-      },
-      {
-        path: 'waiter/bill/:id/menu',
-        element: <WaiterMenuSelectionPage />,
+        handle: {
+          allowedRoles: ['WAITER', 'ADMIN', 'MANAGER'],
+        },
+        children: [
+          {
+            path: 'waiter',
+            element: <WaiterDashboardPage />,
+          },
+          {
+            path: 'waiter/create',
+            element: <WaiterCreateBillPage />,
+          },
+          {
+            path: 'waiter/bill/:id',
+            element: <BillDetailsPage />,
+          },
+          {
+            path: 'waiter/bill/:id/menu',
+            element: <WaiterMenuSelectionPage />,
+          },
+        ],
       },
 
       // Manager/Admin Only
       {
         path: 'admin',
-        element: (
-          <RoleGuard admin manager fallback={<Navigate to="/" replace />}>
-            <AdminPageLayout />
-          </RoleGuard>
-        ),
+        element: <AdminPageLayout />,
+        handle: {
+          allowedRoles: ['ADMIN', 'MANAGER'],
+        },
         children: [
           {
             index: true,

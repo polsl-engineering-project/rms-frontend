@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # Turborepo
 .turbo
+dependency-graph.*
 
 # IDEs
 .vscode/*
